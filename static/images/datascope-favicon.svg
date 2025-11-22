@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Favicon Gradient -->
+    <linearGradient id="faviconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#D5CCC7;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#8B7355;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#6B5B73;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Shadow Filter -->
+    <filter id="faviconShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#000000" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+  
+  <!-- Background Circle -->
+  <circle cx="16" cy="16" r="14" fill="url(#faviconGradient)" filter="url(#faviconShadow)"/>
+  
+  <!-- Simplified Data Visualization -->
+  <g transform="translate(8, 8)">
+    <!-- Chart Bars -->
+    <rect x="1" y="10" width="2" height="6" fill="white" opacity="0.95" rx="1"/>
+    <rect x="4.5" y="8" width="2" height="8" fill="white" opacity="0.95" rx="1"/>
+    <rect x="8" y="6" width="2" height="10" fill="white" opacity="0.95" rx="1"/>
+    <rect x="11.5" y="9" width="2" height="7" fill="white" opacity="0.95" rx="1"/>
+    
+    <!-- AI Indicator Dot -->
+    <circle cx="8" cy="3" r="1.5" fill="white" opacity="0.8"/>
+    
+    <!-- Data Connection Line -->
+    <path d="M2,11 Q8,3 14,10" stroke="white" stroke-width="1" fill="none" opacity="0.6"/>
+  </g>
+</svg>

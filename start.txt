@@ -1,0 +1,1 @@
+ cd c:\Users\ghosh\Desktop\Projects\DataScope; .\venv\Scripts\Activate.ps1; python app.py

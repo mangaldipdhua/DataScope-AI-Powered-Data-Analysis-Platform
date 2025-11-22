@@ -1,0 +1,264 @@
+{% extends "base.html" %}
+
+{% block title %}Contact - DataScope{% endblock %}
+
+{% block content %}
+<section class="section" style="padding-top: 120px;">
+    <div class="container">
+        <div class="section-header">
+            <h1 class="section-title">
+                <i class="fas fa-envelope"></i>
+                Contact Us
+            </h1>
+            <p class="section-subtitle">
+                Get in touch with our team for support, feedback, or collaboration opportunities
+            </p>
+        </div>
+        
+        <div style="max-width: 800px; margin: 0 auto;">
+            <!-- Contact Form -->
+            <div class="card mb-8">
+                <h3 class="mb-6">
+                    <i class="fas fa-paper-plane"></i>
+                    Send us a Message
+                </h3>
+                
+                <form id="contactForm" action="{{ url_for('submit_contact') }}" method="POST">
+                    <div class="grid grid-cols-2">
+                        <div class="form-group">
+                            <label for="name" class="form-label">Name *</label>
+                            <input type="text" id="name" name="name" class="form-control" placeholder="Your full name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email" class="form-label">Email *</label>
+                            <input type="email" id="email" name="email" class="form-control" placeholder="your.email@example.com" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="subject" class="form-label">Subject *</label>
+                        <select id="subject" name="subject" class="form-control" required>
+                            <option value="">Select a subject</option>
+                            <option value="general">General Inquiry</option>
+                            <option value="support">Technical Support</option>
+                            <option value="feedback">Feedback</option>
+                            <option value="collaboration">Collaboration</option>
+                            <option value="bug">Bug Report</option>
+                            <option value="feature">Feature Request</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message" class="form-label">Message *</label>
+                        <textarea id="message" name="message" rows="6" class="form-control" placeholder="Tell us how we can help you..." required></textarea>
+                    </div>
+                    
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-paper-plane"></i>
+                            Send Message
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+
+            
+            <!-- FAQ Section -->
+            <div class="card mt-8">
+                <h3 class="mb-6">
+                    <i class="fas fa-question-circle"></i>
+                    Frequently Asked Questions
+                </h3>
+                
+                <div class="grid grid-cols-1">
+                    <div class="faq-item mb-6">
+                        <h5 class="mb-2">What file formats do you support?</h5>
+                        <p class="text-secondary">
+                            We currently support CSV (.csv) and Excel files (.xlsx, .xls) with a maximum file size of 50MB.
+                        </p>
+                    </div>
+                    
+                    <div class="faq-item mb-6">
+                        <h5 class="mb-2">Is my data secure?</h5>
+                        <p class="text-secondary">
+                            Absolutely. All uploaded files are processed securely and automatically deleted after analysis. 
+                            We don't store or retain any of your data.
+                        </p>
+                    </div>
+                    
+                    <div class="faq-item mb-6">
+                        <h5 class="mb-2">How accurate are the AI insights?</h5>
+                        <p class="text-secondary">
+                            Our AI insights are generated using Google's Gemini AI model and are based on established 
+                            data science principles. However, insights should be validated with domain expertise.
+                        </p>
+                    </div>
+                    
+                    <div class="faq-item mb-6">
+                        <h5 class="mb-2">Can I use this for commercial purposes?</h5>
+                        <p class="text-secondary">
+                            Yes, you can use DataScope for commercial data analysis. For enterprise solutions 
+                            or high-volume usage, please contact us for custom pricing.
+                        </p>
+                    </div>
+                    
+                    <div class="faq-item mb-6">
+                        <h5 class="mb-2">Do you offer API access?</h5>
+                        <p class="text-secondary">
+                            API access is available for enterprise customers. Contact us to discuss your integration needs 
+                            and technical requirements.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Alternative Contact Methods -->
+            <div class="card mt-8 text-center bg-accent">
+                <h4 class="mb-4">Other Ways to Connect</h4>
+                
+                <div class="flex justify-center gap-6">
+                    <a href="#" class="btn btn-outline">
+                        <i class="fab fa-github"></i>
+                        GitHub
+                    </a>
+                    <a href="#" class="btn btn-outline">
+                        <i class="fab fa-twitter"></i>
+                        Twitter
+                    </a>
+                    <a href="#" class="btn btn-outline">
+                        <i class="fab fa-linkedin"></i>
+                        LinkedIn
+                    </a>
+                </div>
+                
+                <p class="mt-4 text-secondary">
+                    Follow us for updates on new features and data analysis tips
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const contactForm = document.getElementById('contactForm');
+    
+    contactForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Get form data
+        const formData = new FormData(this);
+        
+        // Show loading state
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+        submitBtn.disabled = true;
+        
+        // Submit form to backend
+        fetch(this.action, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Reset form
+                this.reset();
+                
+                // Show success message
+                const successMessage = document.createElement('div');
+                successMessage.className = 'alert alert-success';
+                successMessage.innerHTML = `
+                    <i class="fas fa-check-circle"></i>
+                    ${data.message || 'Thank you for your message! We\'ll get back to you within 24 hours.'}
+                `;
+                
+                this.parentNode.insertBefore(successMessage, this);
+                
+                // Remove success message after 5 seconds
+                setTimeout(() => {
+                    successMessage.remove();
+                }, 5000);
+            } else {
+                // Show error message
+                const errorMessage = document.createElement('div');
+                errorMessage.className = 'alert alert-danger';
+                errorMessage.innerHTML = `
+                    <i class="fas fa-exclamation-triangle"></i>
+                    ${data.message || 'Sorry, there was an error sending your message. Please try again.'}
+                `;
+                
+                this.parentNode.insertBefore(errorMessage, this);
+                
+                // Remove error message after 5 seconds
+                setTimeout(() => {
+                    errorMessage.remove();
+                }, 5000);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            
+            // Show error message
+            const errorMessage = document.createElement('div');
+            errorMessage.className = 'alert alert-danger';
+            errorMessage.innerHTML = `
+                <i class="fas fa-exclamation-triangle"></i>
+                Sorry, there was an error sending your message. Please try again.
+            `;
+            
+            this.parentNode.insertBefore(errorMessage, this);
+            
+            // Remove error message after 5 seconds
+            setTimeout(() => {
+                errorMessage.remove();
+            }, 5000);
+        })
+        .finally(() => {
+            // Reset button
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        });
+    });
+    
+    // Add form validation feedback
+    const inputs = contactForm.querySelectorAll('.form-control');
+    inputs.forEach(input => {
+        input.addEventListener('blur', function() {
+            if (this.value.trim() === '' && this.required) {
+                this.style.borderColor = '#ef4444';
+            } else {
+                this.style.borderColor = 'var(--border-strong)';
+            }
+        });
+        
+        input.addEventListener('input', function() {
+            if (this.style.borderColor === 'rgb(239, 68, 68)') {
+                this.style.borderColor = 'var(--border-default)';
+            }
+        });
+    });
+    
+    // FAQ accordion effect
+    const faqItems = document.querySelectorAll('.faq-item h5');
+    faqItems.forEach(item => {
+        item.style.cursor = 'pointer';
+        item.addEventListener('click', function() {
+            const content = this.nextElementSibling;
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                this.innerHTML += ' <i class="fas fa-chevron-up"></i>';
+            } else {
+                content.style.display = 'none';
+                this.innerHTML = this.innerHTML.replace(' <i class="fas fa-chevron-up"></i>', '');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

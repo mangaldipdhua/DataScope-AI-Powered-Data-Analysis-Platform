@@ -1,0 +1,560 @@
+{% extends "base.html" %}
+
+{% block title %}About - DataScope{% endblock %}
+
+{% block content %}
+<section class="section" style="padding-top: 120px;">
+    <div class="container">
+        <div class="section-header">
+            <h1 class="section-title">
+                <i class="fas fa-info-circle"></i>
+                About DataScope
+            </h1>
+            <p class="section-subtitle">
+                Professional AI-powered data analysis platform designed for modern data professionals
+            </p>
+        </div>
+        
+        <!-- Creator Section -->
+        <!-- <div class="card creator-section">
+            <div class="creator-content">
+                <div class="creator-image">
+                    <img src="{{ url_for('static', filename='images/FORMAL.png') }}" 
+                         alt="Mangaldip Dhua" 
+                         class="profile-image">
+                    <div class="image-glow"></div>
+                </div>
+                <div class="creator-info">
+                    <div class="creator-header">
+                        <h3 class="creator-title">
+                            <i class="fas fa-user-tie"></i>
+                            Meet the Creator
+                        </h3>
+                        <h2 class="creator-name">Mangaldip Dhua</h2>
+                        <p class="creator-role">AI/ML Engineer</p>
+                    </div>
+                    <div class="creator-description">
+                        <p>
+                            Passionate about leveraging artificial intelligence and machine learning to solve real-world problems. 
+                            DataScope was born from the vision to democratize data analysis and make powerful AI tools 
+                            accessible to everyone, regardless of their technical background.
+                        </p>
+                        <p>
+                            With expertise in Python, machine learning algorithms, and data visualization, I created this platform 
+                            to bridge the gap between complex data science tools and everyday users who need insights from their data.
+                        </p>
+                    </div>
+                    <div class="creator-links">
+                        <a href="https://github.com/mangaldipdhua" target="_blank" class="social-link github" data-tooltip="GitHub">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="www.linkedin.com/in/mangaldipdhua" target="_blank" class="social-link linkedin" data-tooltip="LinkedIn">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <a href="mailto:mangaldipdhua@gmail.com" class="social-link email" data-tooltip="Email">
+                            <i class="fas fa-envelope"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+        
+        <!-- Mission & Vision -->
+        <div class="mission-vision-section">
+            <div class="grid grid-cols-2 mission-grid">
+                <div class="card mission-card">
+                    <div class="mission-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h3 class="mission-title">Our Mission</h3>
+                    <p class="mission-text">
+                        To democratize data analysis by making professional-grade AI-powered analytics accessible to everyone, 
+                        regardless of their technical background or experience level.
+                    </p>
+                </div>
+                
+                <div class="card vision-card">
+                    <div class="vision-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h3 class="vision-title">Our Vision</h3>
+                    <p class="vision-text">
+                        A world where data-driven insights are not limited to technical experts, but available to anyone 
+                        who wants to understand their data and make informed decisions.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="card project-story">
+                <h3 class="story-title">
+                    <i class="fas fa-lightbulb"></i>
+                    The Story Behind DataScope
+                </h3>
+                <div class="story-content">
+                    <p>
+                        DataScope was born from a simple observation: while data is everywhere, the tools to analyze it 
+                        effectively remain complex and intimidating for most people. As an AI/ML Engineer, I witnessed countless 
+                        individuals struggling with spreadsheets and basic charts when they needed sophisticated analysis.
+                    </p>
+                    <p>
+                        This platform combines cutting-edge artificial intelligence with an intuitive interface, transforming 
+                        raw data into meaningful insights. Whether you're a business analyst exploring market trends, a researcher 
+                        analyzing survey data, a student working on academic projects, or simply someone curious about data patterns, 
+                        DataScope empowers you to unlock the stories hidden within your datasets.
+                    </p>
+                    <div class="story-highlight">
+                        <i class="fas fa-quote-left"></i>
+                        <p>"Every dataset has a story to tell. DataScope helps you discover that story."</p>
+                        <cite>- Mangaldip Dhua</cite>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Technology Stack -->
+        <div class="card tech-stack-section">
+            <div class="tech-header">
+                <h3 class="tech-title">
+                    <i class="fas fa-cogs"></i>
+                    Technology Stack
+                </h3>
+                <p class="tech-subtitle">Built with modern, reliable, and scalable technologies</p>
+            </div>
+            
+            <div class="tech-grid">
+                <div class="tech-card backend">
+                    <div class="tech-icon">
+                        <i class="fab fa-python"></i>
+                    </div>
+                    <h4 class="tech-name">Python & Flask</h4>
+                    <p class="tech-description">Robust backend framework for reliable data processing and web services</p>
+                    <div class="tech-tags">
+                        <span class="tech-tag">Flask</span>
+                        <span class="tech-tag">Python 3.9+</span>
+                    </div>
+                </div>
+                
+                <div class="tech-card ai">
+                    <div class="tech-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h4 class="tech-name">Google Gemini AI</h4>
+                    <p class="tech-description">Advanced AI models for intelligent data insights and recommendations</p>
+                    <div class="tech-tags">
+                        <span class="tech-tag">Gemini Pro</span>
+                        <span class="tech-tag">AI Analysis</span>
+                    </div>
+                </div>
+                
+                <div class="tech-card analytics">
+                    <div class="tech-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h4 class="tech-name">Data Science Stack</h4>
+                    <p class="tech-description">Pandas, NumPy, Matplotlib, and Seaborn for comprehensive data analysis</p>
+                    <div class="tech-tags">
+                        <span class="tech-tag">Pandas</span>
+                        <span class="tech-tag">NumPy</span>
+                        <span class="tech-tag">Matplotlib</span>
+                    </div>
+                </div>
+                
+                <div class="tech-card frontend">
+                    <div class="tech-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h4 class="tech-name">Modern Frontend</h4>
+                    <p class="tech-description">Responsive design with modern CSS3 and JavaScript for seamless experience</p>
+                    <div class="tech-tags">
+                        <span class="tech-tag">CSS3</span>
+                        <span class="tech-tag">JavaScript</span>
+                    </div>
+                </div>
+                
+                <div class="tech-card security">
+                    <div class="tech-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h4 class="tech-name">Security First</h4>
+                    <p class="tech-description">Enterprise-grade security with automatic data cleanup and privacy protection</p>
+                    <div class="tech-tags">
+                        <span class="tech-tag">Data Privacy</span>
+                        <span class="tech-tag">Auto Cleanup</span>
+                    </div>
+                </div>
+                
+                <div class="tech-card deployment">
+                    <div class="tech-icon">
+                        <i class="fas fa-cloud"></i>
+                    </div>
+                    <h4 class="tech-name">Cloud Ready</h4>
+                    <p class="tech-description">Scalable architecture optimized for modern cloud deployment platforms</p>
+                    <div class="tech-tags">
+                        <span class="tech-tag">Scalable</span>
+                        <span class="tech-tag">Cloud Native</span>
+                    </div>
+                </div>
+
+                <div class="tech-card database">
+                    <div class="tech-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h4 class="tech-name">MongoDB & Persistence</h4>
+                    <p class="tech-description">Persistent data storage with automatic synchronization for multi-session access</p>
+                    <div class="tech-tags">
+                        <span class="tech-tag">MongoDB</span>
+                        <span class="tech-tag">TTL Cleanup</span>
+                    </div>
+                </div>
+
+                <div class="tech-card llm">
+                    <div class="tech-icon">
+                        <i class="fas fa-microchip"></i>
+                    </div>
+                    <h4 class="tech-name">Phi-3 Local LLM</h4>
+                    <p class="tech-description">Privacy-first local language model for data analysis with no cloud dependency</p>
+                    <div class="tech-tags">
+                        <span class="tech-tag">Phi-3</span>
+                        <span class="tech-tag">Local Processing</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Key Features -->
+        <div class="features-section">
+            <div class="features-header">
+                <h3 class="features-title">
+                    <i class="fas fa-star"></i>
+                    What Makes DataScope Special
+                </h3>
+                <p class="features-subtitle">Powerful features designed to make data analysis effortless and insightful</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-category automated">
+                    <div class="feature-category-header">
+                        <div class="feature-category-icon">
+                            <i class="fas fa-magic"></i>
+                        </div>
+                        <h4 class="feature-category-title">Automated Analysis</h4>
+                    </div>
+                    <div class="feature-list">
+                        <div class="feature-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Automatic data type detection</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Comprehensive statistical summaries</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Missing data analysis</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Distribution analysis</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Correlation matrices</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Outlier detection</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="feature-category intelligent">
+                    <div class="feature-category-header">
+                        <div class="feature-category-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h4 class="feature-category-title">AI-Powered Insights</h4>
+                    </div>
+                    <div class="feature-list">
+                        <div class="feature-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>AI-powered pattern recognition</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Data quality assessment</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Intelligent cleaning recommendations</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Next steps suggestions</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Potential use cases identification</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Machine learning readiness assessment</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="feature-category interactive">
+                    <div class="feature-category-header">
+                        <div class="feature-category-icon">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <h4 class="feature-category-title">Interactive Chat Assistant</h4>
+                    </div>
+                    <div class="feature-list">
+                        <div class="feature-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Real-time conversational AI with data context</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Persistent data memory across sessions</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>MongoDB-backed data persistence</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Quick question templates</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Dual-AI support (Phi-3 local + Gemini cloud)</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Context-aware responses based on your dataset</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Feature Highlights -->
+            <div class="feature-highlights">
+                <div class="highlight-card upload">
+                    <div class="highlight-icon">
+                        <i class="fas fa-upload"></i>
+                    </div>
+                    <h4>Easy Upload</h4>
+                    <p>Support for CSV, Excel, and JSON files with drag-and-drop interface</p>
+                </div>
+                
+                <div class="highlight-card visualization">
+                    <div class="highlight-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h4>Rich Visualizations</h4>
+                    <p>Interactive charts and graphs that reveal hidden patterns in your data</p>
+                </div>
+                
+                <div class="highlight-card export">
+                    <div class="highlight-icon">
+                        <i class="fas fa-download"></i>
+                    </div>
+                    <h4>Export Results</h4>
+                    <p>Download comprehensive reports and visualizations for presentations</p>
+                </div>
+                
+                <div class="highlight-card privacy">
+                    <div class="highlight-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h4>Privacy First</h4>
+                    <p>Your data is processed securely and automatically deleted after analysis</p>
+                </div>
+
+                <div class="highlight-card chat">
+                    <div class="highlight-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h4>AI Chat Interface</h4>
+                    <p>Ask questions about your data and get instant answers from intelligent AI assistants</p>
+                </div>
+
+                <div class="highlight-card persistence">
+                    <div class="highlight-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h4>Persistent Storage</h4>
+                    <p>Your analysis data is securely stored in MongoDB for multi-session access</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Chat & Data Persistence -->
+        <div class="card mb-8">
+            <h3 class="mb-4">
+                <i class="fas fa-comments"></i>
+                Interactive AI Chat & Data Persistence
+            </h3>
+            
+            <div class="grid grid-cols-2">
+                <div>
+                    <h5 class="mb-3">Real-time Chat Assistant</h5>
+                    <p class="mb-4">
+                        Interact with your data analysis through our intelligent AI chat interface. Ask specific questions 
+                        about patterns, correlations, outliers, and recommendations—all with full context of your dataset.
+                    </p>
+                    
+                    <ul style="list-style: none; padding: 0;">
+                        <li class="mb-2">
+                            <i class="fas fa-comments text-gradient"></i>
+                            Conversational data analysis interface
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-lightbulb text-gradient"></i>
+                            Quick question templates for common queries
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-brain text-gradient"></i>
+                            Powered by Gemini AI and Phi-3 models
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-dumbbell text-gradient"></i>
+                            Local Phi-3 for privacy-first analysis
+                        </li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h5 class="mb-3">MongoDB Data Persistence</h5>
+                    <p class="mb-4">
+                        Your analysis data is automatically saved to MongoDB, enabling persistent access across 
+                        multiple sessions. Return anytime to continue your data analysis without re-uploading.
+                    </p>
+                    
+                    <ul style="list-style: none; padding: 0;">
+                        <li class="mb-2">
+                            <i class="fas fa-database text-gradient"></i>
+                            Secure cloud data storage
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-sync text-gradient"></i>
+                            Automatic data synchronization
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-clock text-gradient"></i>
+                            Access your analysis 24/7 across sessions
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-cogs text-gradient"></i>
+                            Intelligent TTL cleanup for privacy
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Privacy & Security -->
+        <div class="card mb-8">
+            <h3 class="mb-4">
+                <i class="fas fa-shield-alt"></i>
+                Privacy & Security
+            </h3>
+            
+            <div class="grid grid-cols-2">
+                <div>
+                    <h5 class="mb-3">Data Protection</h5>
+                    <p class="mb-4">
+                        Your data privacy is our top priority. All uploaded files are processed securely 
+                        and automatically deleted after analysis completion.
+                    </p>
+                    
+                    <ul style="list-style: none; padding: 0;">
+                        <li class="mb-2">
+                            <i class="fas fa-lock text-gradient"></i>
+                            Encrypted data transmission
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-trash text-gradient"></i>
+                            Automatic file cleanup
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-user-shield text-gradient"></i>
+                            No data storage or retention
+                        </li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h5 class="mb-3">Security Measures</h5>
+                    <p class="mb-4">
+                        Enterprise-grade security measures ensure your data remains safe and 
+                        confidential throughout the analysis process.
+                    </p>
+                    
+                    <ul style="list-style: none; padding: 0;">
+                        <li class="mb-2">
+                            <i class="fas fa-server text-gradient"></i>
+                            Secure server infrastructure
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-code text-gradient"></i>
+                            Regular security updates
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-eye-slash text-gradient"></i>
+                            No third-party data sharing
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Call to Action -->
+        <div class="cta-section">
+            <div class="cta-content">
+                <div class="cta-header">
+                    <h3 class="cta-title">Ready to Unlock Your Data's Potential?</h3>
+                    <p class="cta-subtitle">
+                        Join thousands of users who have discovered the power of AI-driven data analysis. 
+                        Upload your first dataset and experience the difference DataScope makes.
+                    </p>
+                </div>
+                
+                <div class="cta-actions">
+                    <a href="{{ url_for('upload_page') }}" class="cta-button primary">
+                        <i class="fas fa-rocket"></i>
+                        <span>Start Your Analysis</span>
+                        <div class="button-glow"></div>
+                    </a>
+                    <a href="{{ url_for('contact') }}" class="cta-button secondary">
+                        <i class="fas fa-comments"></i>
+                        <span>Get in Touch</span>
+                    </a>
+                </div>
+                
+                <div class="cta-footer">
+                    <p class="cta-note">
+                        <i class="fas fa-heart"></i>
+                        Have questions or feedback? I'd love to hear from you!
+                    </p>
+                    <div class="cta-stats">
+                        <div class="stat-item">
+                            <span class="stat-number">100%</span>
+                            <span class="stat-label">Free to Use</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">0</span>
+                            <span class="stat-label">Data Stored</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">24/7</span>
+                            <span class="stat-label">Available</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

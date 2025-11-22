@@ -1,0 +1,680 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Data - DataScope{% endblock %}
+
+{% block extra_css %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+    .upload-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 80px 0;
+        text-align: center;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .upload-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="1" fill="white" opacity="0.05"/><circle cx="20" cy="80" r="1" fill="white" opacity="0.05"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+        opacity: 0.3;
+    }
+    
+    .upload-hero h1 {
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .upload-hero p {
+        font-size: 1.25rem;
+        opacity: 0.9;
+        max-width: 600px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .upload-container {
+        max-width: 800px;
+        margin: -60px auto 60px;
+        position: relative;
+        z-index: 10;
+        padding: 0 20px;
+    }
+    
+    .upload-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+        overflow: hidden;
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+    
+    .upload-area {
+        padding: 60px 40px;
+        text-align: center;
+        border: 3px dashed #e0e7ff;
+        margin: 40px;
+        border-radius: 16px;
+        background: linear-gradient(45deg, #f8fafc 0%, #f1f5f9 100%);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .upload-area:hover {
+        border-color: #667eea;
+        background: linear-gradient(45deg, #f0f4ff 0%, #e0e7ff 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.1);
+    }
+    
+    .upload-area.dragover {
+        border-color: #667eea;
+        background: linear-gradient(45deg, #f0f4ff 0%, #e0e7ff 100%);
+        transform: scale(1.02);
+    }
+    
+    .upload-icon {
+        font-size: 4rem;
+        color: #667eea;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .upload-area:hover .upload-icon {
+        transform: scale(1.1);
+        color: #5a67d8;
+    }
+    
+    .upload-text h3 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #1e293b;
+        margin-bottom: 0.5rem;
+    }
+    
+    .upload-text p {
+        color: #64748b;
+        font-size: 1rem;
+        line-height: 1.6;
+    }
+    
+    .file-types {
+        display: inline-flex;
+        gap: 12px;
+        margin-top: 20px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .file-type {
+        background: white;
+        padding: 8px 16px;
+        border-radius: 25px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #667eea;
+        border: 2px solid #e0e7ff;
+        transition: all 0.2s ease;
+    }
+    
+    .file-type:hover {
+        background: #667eea;
+        color: white;
+        transform: translateY(-1px);
+    }
+    
+    .file-selected {
+        background: linear-gradient(45deg, #dcfce7 0%, #bbf7d0 100%);
+        border-color: #22c55e;
+    }
+    
+    .upload-success {
+        background: white;
+        border-radius: 16px;
+        padding: 40px;
+        text-align: center;
+        border: 2px solid #22c55e;
+        margin: 40px;
+    }
+    
+    .success-icon {
+        font-size: 4rem;
+        color: #22c55e;
+        margin-bottom: 1rem;
+    }
+    
+    .file-info {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 20px;
+        margin: 20px 40px;
+        border-left: 4px solid #667eea;
+    }
+    
+    .file-details {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+    
+    .file-detail {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #475569;
+        font-size: 0.9rem;
+    }
+    
+    .file-detail i {
+        color: #667eea;
+    }
+    
+    .action-buttons {
+        padding: 40px;
+        background: #f8fafc;
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        padding: 16px 32px;
+        border-radius: 12px;
+        color: white;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        color: white;
+        text-decoration: none;
+    }
+    
+    .btn-primary:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+    
+    .btn-secondary {
+        background: white;
+        border: 2px solid #e2e8f0;
+        padding: 14px 28px;
+        border-radius: 12px;
+        color: #475569;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    
+    .btn-secondary:hover {
+        border-color: #667eea;
+        color: #667eea;
+        background: #f0f4ff;
+        transform: translateY(-1px);
+        text-decoration: none;
+    }
+    
+    .features-grid {
+        max-width: 1200px;
+        margin: 80px auto;
+        padding: 0 20px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+    }
+    
+    .feature-card {
+        background: white;
+        border-radius: 16px;
+        padding: 30px;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        border: 1px solid #f1f5f9;
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+    }
+    
+    .feature-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        font-size: 2rem;
+        color: white;
+    }
+    
+    .feature-card h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #1e293b;
+        margin-bottom: 10px;
+    }
+    
+    .feature-card p {
+        color: #64748b;
+        line-height: 1.6;
+    }
+    
+    .alert {
+        margin: 20px 40px;
+        padding: 16px 20px;
+        border-radius: 12px;
+        border-left: 4px solid;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .alert-success {
+        background: #f0fdf4;
+        border-left-color: #22c55e;
+        color: #15803d;
+    }
+    
+    .alert-error {
+        background: #fef2f2;
+        border-left-color: #ef4444;
+        color: #dc2626;
+    }
+    
+    .loading-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.9);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        border-radius: 20px;
+    }
+    
+    .loading-spinner {
+        width: 60px;
+        height: 60px;
+        border: 4px solid #e0e7ff;
+        border-top: 4px solid #667eea;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    @media (max-width: 768px) {
+        .upload-hero h1 {
+            font-size: 2.5rem;
+        }
+        
+        .upload-area {
+            margin: 20px;
+            padding: 40px 20px;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .file-details {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="upload-hero">
+    <div class="container">
+        <h1><i class="fas fa-chart-line"></i> Data Analysis Made Simple</h1>
+        <p>Upload your CSV or Excel file and get instant insights, visualizations, and AI-powered analysis</p>
+    </div>
+</section>
+
+<!-- Upload Section -->
+<div class="upload-container">
+    <div class="upload-card">
+        <div class="loading-overlay" id="loadingOverlay">
+            <div class="text-center">
+                <div class="loading-spinner"></div>
+                <p class="mt-3" style="color: #667eea; font-weight: 500;">Analyzing your data...</p>
+            </div>
+        </div>
+        
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'error' if category == 'error' else 'success' }}">
+                        <i class="fas fa-{{ 'exclamation-triangle' if category == 'error' else 'check-circle' }}"></i>
+                        <span>{{ message|safe }}</span>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <form id="uploadForm" action="{{ url_for('analyze_file') }}" method="POST" enctype="multipart/form-data">
+            <!-- Upload Area -->
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-content">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <div class="upload-text">
+                        <h3>Drop your file here or click to browse</h3>
+                        <p>Supports CSV, Excel (XLSX, XLS) files up to 50MB</p>
+                        <div class="file-types">
+                            <span class="file-type"><i class="fas fa-file-csv"></i> CSV</span>
+                            <span class="file-type"><i class="fas fa-file-excel"></i> XLSX</span>
+                            <span class="file-type"><i class="fas fa-file-excel"></i> XLS</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <input type="file" id="fileInput" name="file" accept=".csv,.xlsx,.xls" style="display: none;">
+            
+            <!-- File Info (Hidden by default) -->
+            <div class="file-info" id="fileInfo" style="display: none;">
+                <div class="file-details">
+                    <div class="file-detail">
+                        <i class="fas fa-file"></i>
+                        <span id="fileName">filename.csv</span>
+                    </div>
+                    <div class="file-detail">
+                        <i class="fas fa-hdd"></i>
+                        <span id="fileSize">1.2 MB</span>
+                    </div>
+                    <div class="file-detail">
+                        <i class="fas fa-calendar"></i>
+                        <span id="fileDate">Just now</span>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-danger" id="removeFile">
+                        <i class="fas fa-trash"></i> Remove
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button type="submit" class="btn-primary" id="analyzeBtn" disabled>
+                    <i class="fas fa-magic"></i>
+                    <span>Analyze Data</span>
+                </button>
+                <button type="button" class="btn-secondary" id="sampleBtn">
+                    <i class="fas fa-download"></i>
+                    <span>Try Sample Data</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Features Section -->
+<section class="features-grid">
+    <div class="feature-card">
+        <div class="feature-icon">
+            <i class="fas fa-chart-bar"></i>
+        </div>
+        <h3>Advanced Analytics</h3>
+        <p>Get comprehensive statistical analysis, correlation matrices, and distribution insights from your data automatically.</p>
+    </div>
+    
+    <div class="feature-card">
+        <div class="feature-icon">
+            <i class="fas fa-robot"></i>
+        </div>
+        <h3>AI-Powered Insights</h3>
+        <p>Our AI analyzes your data patterns and provides intelligent recommendations and business insights.</p>
+    </div>
+    
+    <div class="feature-card">
+        <div class="feature-icon">
+            <i class="fas fa-palette"></i>
+        </div>
+        <h3>Beautiful Visualizations</h3>
+        <p>Generate stunning charts, graphs, and interactive visualizations that make your data story compelling.</p>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('fileInput');
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    const sampleBtn = document.getElementById('sampleBtn');
+    const fileInfo = document.getElementById('fileInfo');
+    const fileName = document.getElementById('fileName');
+    const fileSize = document.getElementById('fileSize');
+    const removeFile = document.getElementById('removeFile');
+    const uploadForm = document.getElementById('uploadForm');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    
+    let selectedFile = null;
+    
+    // Click to upload
+    uploadArea.addEventListener('click', () => {
+        fileInput.click();
+    });
+    
+    // File input change
+    fileInput.addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+            handleFileSelect(this.files[0]);
+        }
+    });
+    
+    // Drag and drop
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('dragover');
+    });
+    
+    uploadArea.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        if (!uploadArea.contains(e.relatedTarget)) {
+            uploadArea.classList.remove('dragover');
+        }
+    });
+    
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
+        
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            handleFileSelect(files[0]);
+        }
+    });
+    
+    // Handle file selection
+    function handleFileSelect(file) {
+        // Validate file type
+        const allowedTypes = ['.csv', '.xlsx', '.xls'];
+        const ext = '.' + file.name.split('.').pop().toLowerCase();
+        
+        if (!allowedTypes.includes(ext)) {
+            showAlert('Please select a CSV or Excel file.', 'error');
+            return;
+        }
+        
+        // Validate file size (50MB limit)
+        if (file.size > 50 * 1024 * 1024) {
+            showAlert('File must be less than 50MB.', 'error');
+            return;
+        }
+        
+        selectedFile = file;
+        
+        // Update UI
+        uploadArea.classList.add('file-selected');
+        uploadArea.innerHTML = `
+            <div class="upload-success">
+                <div class="success-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3 style="color: #22c55e; margin-bottom: 10px;">File Selected Successfully!</h3>
+                <p style="color: #475569;">${file.name}</p>
+            </div>
+        `;
+        
+        // Show file info
+        fileName.textContent = file.name;
+        fileSize.textContent = formatFileSize(file.size);
+        fileInfo.style.display = 'block';
+        
+        // Enable analyze button
+        analyzeBtn.disabled = false;
+        const shortName = file.name.length > 20 ? file.name.substring(0, 20) + '...' : file.name;
+        analyzeBtn.innerHTML = `
+            <i class="fas fa-magic"></i>
+            <span>Analyze "${shortName}"</span>
+        `;
+        
+        // Update file input
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        fileInput.files = dataTransfer.files;
+    }
+    
+    // Remove file
+    removeFile.addEventListener('click', () => {
+        selectedFile = null;
+        fileInput.value = '';
+        fileInfo.style.display = 'none';
+        analyzeBtn.disabled = true;
+        analyzeBtn.innerHTML = '<i class="fas fa-magic"></i><span>Analyze Data</span>';
+        
+        uploadArea.classList.remove('file-selected');
+        uploadArea.innerHTML = `
+            <div class="upload-content">
+                <div class="upload-icon">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <div class="upload-text">
+                    <h3>Drop your file here or click to browse</h3>
+                    <p>Supports CSV, Excel (XLSX, XLS) files up to 50MB</p>
+                    <div class="file-types">
+                        <span class="file-type"><i class="fas fa-file-csv"></i> CSV</span>
+                        <span class="file-type"><i class="fas fa-file-excel"></i> XLSX</span>
+                        <span class="file-type"><i class="fas fa-file-excel"></i> XLS</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    // Sample data button
+    sampleBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const sampleData = `Name,Age,Salary,Department,Years_Experience,Performance_Score
+John Smith,28,55000,Engineering,3,85
+Sarah Johnson,32,62000,Marketing,5,92
+Mike Brown,45,78000,Engineering,15,88
+Emily Davis,29,51000,Sales,2,79
+David Wilson,38,69000,Marketing,8,91
+Lisa Anderson,34,58000,Sales,6,87
+Chris Miller,41,72000,Engineering,12,89
+Amanda Taylor,27,48000,HR,1,82
+Robert Garcia,36,65000,Marketing,7,90
+Jennifer Martinez,31,59000,Sales,4,86`;
+        
+        const blob = new Blob([sampleData], { type: 'text/csv' });
+        const file = new File([blob], 'sample_employee_data.csv', { type: 'text/csv' });
+        
+        handleFileSelect(file);
+        showAlert('Sample data loaded successfully! Ready to analyze.', 'success');
+    });
+    
+    // Form submission
+    uploadForm.addEventListener('submit', function(e) {
+        if (!selectedFile) {
+            e.preventDefault();
+            showAlert('Please select a file to analyze.', 'error');
+            return;
+        }
+        
+        // Show loading overlay
+        loadingOverlay.style.display = 'flex';
+        analyzeBtn.disabled = true;
+        analyzeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Analyzing...</span>';
+    });
+    
+    // Utility functions
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+    
+    function showAlert(message, type) {
+        const alertHtml = `
+            <div class="alert alert-${type}" style="margin: 20px 40px;">
+                <i class="fas fa-${type === 'error' ? 'exclamation-triangle' : 'check-circle'}"></i>
+                <span>${message}</span>
+            </div>
+        `;
+        
+        uploadArea.insertAdjacentHTML('beforebegin', alertHtml);
+        
+        // Remove alert after 5 seconds
+        setTimeout(() => {
+            const alert = document.querySelector('.alert:last-of-type');
+            if (alert) {
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 300);
+            }
+        }, 5000);
+    }
+});
+</script>
+{% endblock %}

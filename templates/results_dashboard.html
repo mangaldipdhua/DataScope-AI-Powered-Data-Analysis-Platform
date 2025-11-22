@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="en" class="dashboard-page">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis Results - {{ filename }} | DataScope</title>
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard_fixed.css') }}">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/datascope-favicon.svg') }}">
+</head>
+<body class="dashboard-page">
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <!-- Brand -->
+            <a href="{{ url_for('index') }}" class="nav-brand">
+                <img src="{{ url_for('static', filename='images/datascope-logo.svg') }}" alt="DataScope" class="nav-logo">
+            </a>
+            
+            <!-- Desktop Menu -->
+            <ul class="nav-menu">
+                    <li><a href="{{ url_for('index') }}" class="nav-link"><span><i class="fas fa-home"></i> Home</span></a></li>
+                    <li><a href="{{ url_for('upload_page') }}" class="nav-link"><span><i class="fas fa-chart-line"></i> Analyze</span></a></li>
+                    <li><a href="{{ url_for('about') }}" class="nav-link"><span><i class="fas fa-info-circle"></i> About</span></a></li>
+                    <li><a href="{{ url_for('contact') }}" class="nav-link"><span><i class="fas fa-envelope"></i> Contact</span></a></li>
+                </ul>
+                
+                <!-- Mobile Toggle -->
+                <button class="nav-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+        </div>
+    </nav>
+
+    <!-- Dashboard Container -->
+    <div class="results-container">
+        <div class="dashboard-layout">
+            
+            <!-- Left Sidebar - Dataset Overview -->
+            <aside class="dashboard-sidebar">
+                <!-- Dataset Info -->
+                <div class="sidebar-section">
+                    <div class="sidebar-title">
+                        <i class="fas fa-chart-bar"></i>
+                        Dataset Overview
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <span class="stat-number">{{ basic_stats['rows'] }}</span>
+                            <span class="stat-label">Rows</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-number">{{ basic_stats['columns'] }}</span>
+                            <span class="stat-label">Columns</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-number">{{ '%.1f'|format(basic_stats['memory_mb']) }}MB</span>
+                            <span class="stat-label">Size</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-number">{{ basic_stats['data_types']|length }}</span>
+                            <span class="stat-label">Types</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Data Quality -->
+                <div class="sidebar-section">
+                    <div class="sidebar-title">
+                        <i class="fas fa-shield-alt"></i>
+                        Data Quality
+                    </div>
+                    
+                    <div class="quality-item">
+                        <span class="quality-label">Missing Data</span>
+                        <span class="quality-value {% if basic_stats['missing_percentage'] == 0 %}good{% elif basic_stats['missing_percentage'] < 10 %}warning{% else %}error{% endif %}">
+                            {{ '%.0f'|format(basic_stats['missing_percentage']) }}%
+                        </span>
+                    </div>
+                    
+                    <div class="quality-item">
+                        <span class="quality-label">Unique Values</span>
+                        <span class="quality-value good">
+                            {{ analysis['data_quality']['unique_values'] }}
+                        </span>
+                    </div>
+                    
+                    <div class="quality-item">
+                        <span class="quality-label">Duplicates</span>
+                        <span class="quality-value {% if analysis['data_quality']['duplicates'] == 0 %}good{% else %}warning{% endif %}">
+                            {{ analysis['data_quality']['duplicates'] }}
+                        </span>
+                    </div>
+                </div>
+                
+                <!-- Feature Types -->
+                <div class="sidebar-section">
+                    <div class="sidebar-title">
+                        <i class="fas fa-tags"></i>
+                        Feature Types
+                    </div>
+                    
+                    <div class="quality-item">
+                        <span class="quality-label">Numeric</span>
+                        <span class="quality-value good">
+                            {{ basic_stats['numeric_columns']|length }}
+                        </span>
+                    </div>
+                    
+                    <div class="quality-item">
+                        <span class="quality-label">Categorical</span>
+                        <span class="quality-value good">
+                            {{ (basic_stats['columns'] - basic_stats['numeric_columns']|length) }}
+                        </span>
+                    </div>
+                </div>
+                
+
+            </aside>
+
+            <!-- Main Content - Visualizations -->
+            <main class="dashboard-main">
+                <div class="dashboard-header">
+                    <div class="dashboard-title">
+                        <i class="fas fa-chart-line"></i>
+                        Data Visualizations
+                    </div>
+                    
+                    <div class="filter-tabs">
+                        <button class="filter-tab active" data-filter="all">All</button>
+                        <button class="filter-tab" data-filter="overview">Overview</button>
+                        <button class="filter-tab" data-filter="analysis">Analysis</button>
+                        <button class="filter-tab" data-filter="quality">Quality</button>
+                    </div>
+                </div>
+                
+                <div class="charts-grid">
+                    <!-- 🔍 Comprehensive EDA Insights -->
+                    <div class="chart-card eda-insights-card" data-category="overview">
+                        <div class="chart-header">
+                            <div class="chart-title">
+                                <i class="fas fa-microscope"></i>
+                                Comprehensive EDA Insights
+                            </div>
+                        </div>
+                        <div class="eda-insights-content">
+                            <div class="eda-grid">
+                                <!-- Data Overview -->
+                                <div class="eda-section">
+                                    <h4><i class="fas fa-database"></i> Data Overview</h4>
+                                    <div class="eda-items">
+                                        <div class="eda-item">
+                                            <span class="eda-label">Shape:</span>
+                                            <span class="eda-value">{{ analysis.basic_info.shape[0] }} × {{ analysis.basic_info.shape[1] }}</span>
+                                        </div>
+                                        <div class="eda-item">
+                                            <span class="eda-label">Memory:</span>
+                                            <span class="eda-value">{{ "%.1f"|format(analysis.memory_analysis.total_memory_mb) if analysis.memory_analysis is defined else "0.0" }} MB</span>
+                                        </div>
+                                        <div class="eda-item">
+                                            <span class="eda-label">Duplicates:</span>
+                                            <span class="eda-value">{{ analysis.data_quality.duplicate_rows }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Feature Types -->
+                                <div class="eda-section">
+                                    <h4><i class="fas fa-tags"></i> Feature Types</h4>
+                                    <div class="eda-items">
+                                        <div class="eda-item">
+                                            <span class="eda-label">Continuous:</span>
+                                            <span class="eda-value">{{ analysis.distribution_analysis.feature_types.continuous|length if analysis.distribution_analysis.feature_types is defined else 0 }}</span>
+                                        </div>
+                                        <div class="eda-item">
+                                            <span class="eda-label">Discrete:</span>
+                                            <span class="eda-value">{{ analysis.distribution_analysis.feature_types.discrete|length if analysis.distribution_analysis.feature_types is defined else 0 }}</span>
+                                        </div>
+                                        <div class="eda-item">
+                                            <span class="eda-label">Binary:</span>
+                                            <span class="eda-value">{{ analysis.distribution_analysis.feature_types.binary|length if analysis.distribution_analysis.feature_types is defined else 0 }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Data Quality -->
+                                <div class="eda-section">
+                                    <h4><i class="fas fa-shield-alt"></i> Data Quality</h4>
+                                    <div class="eda-items">
+                                        <div class="eda-item">
+                                            <span class="eda-label">Missing:</span>
+                                            <span class="eda-badge severity-{{ analysis.missing_analysis.missing_severity }}">
+                                                {{ "%.1f"|format(analysis.data_quality.missing_percentage) }}%
+                                            </span>
+                                        </div>
+                                        <div class="eda-item">
+                                            <span class="eda-label">Outliers:</span>
+                                            {% set total_outliers = 0 %}
+                                            {% if analysis.outlier_analysis is defined %}
+                                                {% for col, outlier_info in analysis.outlier_analysis.items() %}
+                                                    {% if outlier_info is mapping and outlier_info.count is defined %}
+                                                        {% set total_outliers = total_outliers + outlier_info.count %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endif %}
+                                            <span class="eda-value">{{ total_outliers }}</span>
+                                        </div>
+                                        <div class="eda-item">
+                                            <span class="eda-label">High Cardinality:</span>
+                                            <span class="eda-value">{{ analysis.distribution_analysis.feature_types.high_cardinality|length if analysis.distribution_analysis.feature_types is defined else 0 }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Correlations -->
+                                {% if analysis.correlation_analysis %}
+                                <div class="eda-section">
+                                    <h4><i class="fas fa-project-diagram"></i> Correlations</h4>
+                                    <div class="eda-items">
+                                        <div class="eda-item">
+                                            <span class="eda-label">High Corr:</span>
+                                            <span class="eda-value">{{ analysis.correlation_analysis.high_correlations|length }}</span>
+                                        </div>
+                                        <div class="eda-item">
+                                            <span class="eda-label">Multicollinearity:</span>
+                                            {% set risk_count = analysis.correlation_analysis.multicollinearity_risk|length %}
+                                            <span class="eda-badge severity-{{ 'high' if risk_count > 0 else 'low' }}">
+                                                {{ 'YES' if risk_count > 0 else 'NO' }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Data Overview Chart -->
+                    {% if plots and 'overview' in plots %}
+                    <div class="chart-card" data-category="overview">
+                        <div class="chart-header">
+                            <div class="chart-title">
+                                <i class="fas fa-chart-area"></i>
+                                Data Overview
+                            </div>
+                            <button class="chart-expand" onclick="expandChart('{{ url_for('static', filename='plots/' + plots['overview']) }}')">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                        </div>
+                        <div class="chart-content">
+                            <img src="{{ url_for('static', filename='plots/' + plots['overview']) }}" alt="Data Overview">
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Correlation Matrix -->
+                    {% if plots and 'correlation' in plots %}
+                    <div class="chart-card" data-category="analysis">
+                        <div class="chart-header">
+                            <div class="chart-title">
+                                <i class="fas fa-project-diagram"></i>
+                                Correlation Matrix
+                            </div>
+                            <button class="chart-expand" onclick="expandChart('{{ url_for('static', filename='plots/' + plots['correlation']) }}')">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                        </div>
+                        <div class="chart-content">
+                            <img src="{{ url_for('static', filename='plots/' + plots['correlation']) }}" alt="Correlation Matrix">
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Distributions -->
+                    {% if plots and 'distributions' in plots %}
+                    <div class="chart-card" data-category="analysis">
+                        <div class="chart-header">
+                            <div class="chart-title">
+                                <i class="fas fa-chart-bar"></i>
+                                Data Distributions
+                            </div>
+                            <button class="chart-expand" onclick="expandChart('{{ url_for('static', filename='plots/' + plots['distributions']) }}')">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                        </div>
+                        <div class="chart-content">
+                            <img src="{{ url_for('static', filename='plots/' + plots['distributions']) }}" alt="Data Distributions">
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Box Plots (Outlier Detection) -->
+                    {% if plots and 'boxplots' in plots %}
+                    <div class="chart-card" data-category="quality">
+                        <div class="chart-header">
+                            <div class="chart-title">
+                                <i class="fas fa-search"></i>
+                                Outlier Detection
+                            </div>
+                            <button class="chart-expand" onclick="expandChart('{{ url_for('static', filename='plots/' + plots['boxplots']) }}')">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                        </div>
+                        <div class="chart-content">
+                            <img src="{{ url_for('static', filename='plots/' + plots['boxplots']) }}" alt="Outlier Detection">
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Categorical Analysis -->
+                    {% if plots and 'categorical' in plots %}
+                    <div class="chart-card" data-category="analysis">
+                        <div class="chart-header">
+                            <div class="chart-title">
+                                <i class="fas fa-tags"></i>
+                                Categorical Analysis
+                            </div>
+                            <button class="chart-expand" onclick="expandChart('{{ url_for('static', filename='plots/' + plots['categorical']) }}')">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                        </div>
+                        <div class="chart-content">
+                            <img src="{{ url_for('static', filename='plots/' + plots['categorical']) }}" alt="Categorical Analysis">
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Statistical Distributions -->
+                    {% if plots and 'statistical_distributions' in plots %}
+                    <div class="chart-card" data-category="analysis">
+                        <div class="chart-header">
+                            <div class="chart-title">
+                                <i class="fas fa-chart-line"></i>
+                                Statistical Distributions
+                            </div>
+                            <button class="chart-expand" onclick="expandChart('{{ url_for('static', filename='plots/' + plots['statistical_distributions']) }}')">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                        </div>
+                        <div class="chart-content">
+                            <img src="{{ url_for('static', filename='plots/' + plots['statistical_distributions']) }}" alt="Statistical Distributions">
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Data Quality Analysis -->
+                    {% if plots and 'data_quality' in plots %}
+                    <div class="chart-card" data-category="quality">
+                        <div class="chart-header">
+                            <div class="chart-title">
+                                <i class="fas fa-shield-alt"></i>
+                                Data Quality Analysis
+                            </div>
+                            <button class="chart-expand" onclick="expandChart('{{ url_for('static', filename='plots/' + plots['data_quality']) }}')">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                        </div>
+                        <div class="chart-content">
+                            <img src="{{ url_for('static', filename='plots/' + plots['data_quality']) }}" alt="Data Quality Analysis">
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Advanced Statistical Analysis -->
+                    {% if plots and 'advanced_stats' in plots %}
+                    <div class="chart-card" data-category="analysis">
+                        <div class="chart-header">
+                            <div class="chart-title">
+                                <i class="fas fa-calculator"></i>
+                                Advanced Statistics
+                            </div>
+                            <button class="chart-expand" onclick="expandChart('{{ url_for('static', filename='plots/' + plots['advanced_stats']) }}')">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                        </div>
+                        <div class="chart-content">
+                            <img src="{{ url_for('static', filename='plots/' + plots['advanced_stats']) }}" alt="Advanced Statistics">
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Missing Value Analysis -->
+                    {% if plots and 'missing_analysis' in plots %}
+                    <div class="chart-card" data-category="quality">
+                        <div class="chart-header">
+                            <div class="chart-title">
+                                <i class="fas fa-question-circle"></i>
+                                Missing Value Analysis
+                            </div>
+                            <button class="chart-expand" onclick="expandChart('{{ url_for('static', filename='plots/' + plots['missing_analysis']) }}')">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                        </div>
+                        <div class="chart-content">
+                            <img src="{{ url_for('static', filename='plots/' + plots['missing_analysis']) }}" alt="Missing Value Analysis">
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Outlier Detection -->
+                    {% if plots and 'outlier_detection' in plots %}
+                    <div class="chart-card" data-category="quality">
+                        <div class="chart-header">
+                            <div class="chart-title">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                Outlier Detection
+                            </div>
+                            <button class="chart-expand" onclick="expandChart('{{ url_for('static', filename='plots/' + plots['outlier_detection']) }}')">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                        </div>
+                        <div class="chart-content">
+                            <img src="{{ url_for('static', filename='plots/' + plots['outlier_detection']) }}" alt="Outlier Detection">
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Feature Relationships -->
+                    {% if plots and 'pair_plot' in plots %}
+                    <div class="chart-card" data-category="analysis">
+                        <div class="chart-header">
+                            <div class="chart-title">
+                                <i class="fas fa-sitemap"></i>
+                                Feature Relationships
+                            </div>
+                            <button class="chart-expand" onclick="expandChart('{{ url_for('static', filename='plots/' + plots['pair_plot']) }}')">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                        </div>
+                        <div class="chart-content">
+                            <img src="{{ url_for('static', filename='plots/' + plots['pair_plot']) }}" alt="Feature Relationships">
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Statistical Summary -->
+                    {% if plots and 'statistical_summary' in plots %}
+                    <div class="chart-card" data-category="overview">
+                        <div class="chart-header">
+                            <div class="chart-title">
+                                <i class="fas fa-list-alt"></i>
+                                Statistical Summary
+                            </div>
+                            <button class="chart-expand" onclick="expandChart('{{ url_for('static', filename='plots/' + plots['statistical_summary']) }}')">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                        </div>
+                        <div class="chart-content">
+                            <img src="{{ url_for('static', filename='plots/' + plots['statistical_summary']) }}" alt="Statistical Summary">
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </main>
+
+            <!-- Right Sidebar - Column Details -->
+            <aside class="dashboard-right-sidebar">
+
+                <!-- 🔍 Basic Descriptive Statistics -->
+                <div class="sidebar-section">
+                    <div class="sidebar-title">
+                        <i class="fas fa-calculator"></i>
+                        Descriptive Statistics
+                    </div>
+                    
+                    <div class="stats-insights">
+                        <!-- Data Distribution -->
+                        <div class="insight-item">
+                            <div class="insight-label">Data Distribution</div>
+                            <div class="insight-details">
+                                <div class="insight-value-text">
+                                    {{ analysis.distribution_analysis.numeric_features if analysis.distribution_analysis is defined else 0 }} Numeric, 
+                                    {{ analysis.distribution_analysis.categorical_features if analysis.distribution_analysis is defined else 0 }} Categorical
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Memory Usage -->
+                        <div class="insight-item">
+                            <div class="insight-label">Memory Usage</div>
+                            <div class="insight-details">
+                                <span class="insight-value">{{ "%.1f"|format(analysis.memory_analysis.total_memory_mb) if analysis.memory_analysis is defined else "0.0" }} MB</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Data Completeness -->
+                        <div class="insight-item">
+                            <div class="insight-label">Data Completeness</div>
+                            <div class="insight-details">
+                                {% set completeness = 100 - analysis.data_quality.missing_percentage %}
+                                <span class="insight-value">{{ "%.1f"|format(completeness) }}%</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Duplicate Rows -->
+                        <div class="insight-item">
+                            <div class="insight-label">Duplicate Rows</div>
+                            <div class="insight-details">
+                                <span class="insight-value">{{ analysis.data_quality.duplicate_rows }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 📊 Data Quality Analysis -->
+                <div class="sidebar-section">
+                    <div class="sidebar-title">
+                        <i class="fas fa-shield-alt"></i>
+                        Data Quality
+                    </div>
+                    
+                    <div class="stats-insights">
+                        <!-- Missing Data Severity -->
+                        <div class="insight-item">
+                            <div class="insight-label">Missing Data</div>
+                            <div class="insight-details">
+                                {% set severity = analysis.missing_analysis.missing_severity %}
+                                <span class="insight-badge severity-{{ severity }}">{{ severity.upper() }}</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Outliers Detection -->
+                        {% if analysis.outlier_analysis is defined %}
+                        <div class="insight-item">
+                            <div class="insight-label">Outliers Detected</div>
+                            <div class="insight-details">
+                                {% set total_outliers = 0 %}
+                                {% for col, outlier_info in analysis.outlier_analysis.items() %}
+                                    {% if outlier_info is mapping and outlier_info.count is defined %}
+                                        {% set total_outliers = total_outliers + outlier_info.count %}
+                                    {% endif %}
+                                {% endfor %}
+                                <span class="insight-value">{{ total_outliers }}</span>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- High Cardinality Features -->
+                        <div class="insight-item">
+                            <div class="insight-label">High Cardinality</div>
+                            <div class="insight-details">
+                                <span class="insight-value">{{ analysis.distribution_analysis.feature_types.high_cardinality|length if analysis.distribution_analysis.feature_types is defined else 0 }}</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Constant Columns -->
+                        <div class="insight-item">
+                            <div class="insight-label">Constant Columns</div>
+                            <div class="insight-details">
+                                <span class="insight-value">{{ analysis.data_validation.constant_columns|length }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 🧱 Correlation Analysis -->
+                {% if analysis.correlation_analysis %}
+                <div class="sidebar-section">
+                    <div class="sidebar-title">
+                        <i class="fas fa-project-diagram"></i>
+                        Correlation Analysis
+                    </div>
+                    
+                    <div class="stats-insights">
+                        <!-- High Correlations -->
+                        <div class="insight-item">
+                            <div class="insight-label">High Correlations</div>
+                            <div class="insight-details">
+                                <span class="insight-value">{{ analysis.correlation_analysis.high_correlations|length }}</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Multicollinearity Risk -->
+                        <div class="insight-item">
+                            <div class="insight-label">Multicollinearity Risk</div>
+                            <div class="insight-details">
+                                {% set risk_count = analysis.correlation_analysis.multicollinearity_risk|length %}
+                                <span class="insight-badge severity-{{ 'high' if risk_count > 0 else 'low' }}">
+                                    {{ 'YES' if risk_count > 0 else 'NO' }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- ⚖️ Feature Analysis -->
+                <div class="sidebar-section">
+                    <div class="sidebar-title">
+                        <i class="fas fa-balance-scale"></i>
+                        Feature Analysis
+                    </div>
+                    
+                    <div class="stats-insights">
+                        <!-- Feature Types -->
+                        <div class="insight-item">
+                            <div class="insight-label">Continuous Features</div>
+                            <div class="insight-details">
+                                <span class="insight-value">{{ analysis.distribution_analysis.feature_types.continuous|length if analysis.distribution_analysis.feature_types is defined else 0 }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="insight-item">
+                            <div class="insight-label">Discrete Features</div>
+                            <div class="insight-details">
+                                <span class="insight-value">{{ analysis.distribution_analysis.feature_types.discrete|length if analysis.distribution_analysis.feature_types is defined else 0 }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="insight-item">
+                            <div class="insight-label">Binary Features</div>
+                            <div class="insight-details">
+                                <span class="insight-value">{{ analysis.distribution_analysis.feature_types.binary|length if analysis.distribution_analysis.feature_types is defined else 0 }}</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Low Variance Features -->
+                        {% if analysis.variance_analysis %}
+                        <div class="insight-item">
+                            <div class="insight-label">Low Variance</div>
+                            <div class="insight-details">
+                                <span class="insight-value">{{ analysis.variance_analysis.low_variance_features|length }}</span>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="sidebar-section">
+                    <div class="sidebar-title">
+                        <i class="fas fa-columns"></i>
+                        Column Details
+                    </div>
+                    
+                    <div class="column-list">
+                        {% for column, dtype in analysis['basic_info']['dtypes'].items() %}
+                        <div class="column-item">
+                            <span class="column-name">{{ column }}</span>
+                            <span class="column-type 
+                                {% if 'int' in dtype|string or 'float' in dtype|string %}type-numeric
+                                {% elif 'datetime' in dtype|string %}type-datetime
+                                {% elif 'bool' in dtype|string %}type-boolean
+                                {% else %}type-object
+                                {% endif %}">
+                                {% if 'int' in dtype|string or 'float' in dtype|string %}NUM
+                                {% elif 'datetime' in dtype|string %}DATE
+                                {% elif 'bool' in dtype|string %}BOOL
+                                {% else %}TEXT
+                                {% endif %}
+                            </span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+            </aside>
+        </div>
+    </div>
+
+    <!-- Chart Modal -->
+    <div class="chart-modal" id="chartModal" onclick="closeModal()">
+        <img id="modalImage" src="" alt="Expanded Chart">
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Filter functionality
+        document.querySelectorAll('.filter-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Update active tab
+                document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                const filter = tab.dataset.filter;
+                
+                // Show/hide charts based on filter
+                document.querySelectorAll('.chart-card').forEach(card => {
+                    if (filter === 'all' || card.dataset.category === filter) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+        
+        // Chart expansion functionality
+        function expandChart(imageSrc) {
+            const modal = document.getElementById('chartModal');
+            const modalImage = document.getElementById('modalImage');
+            
+            modalImage.src = imageSrc;
+            modal.classList.add('active');
+        }
+        
+        function closeModal() {
+            const modal = document.getElementById('chartModal');
+            modal.classList.remove('active');
+        }
+        
+        // AI Insights toggle functionality
+        function toggleAIInsights() {
+            const shortContent = document.querySelector('.ai-content');
+            const fullContent = document.querySelector('.ai-full-content');
+            
+            if (fullContent.style.display === 'none') {
+                shortContent.style.display = 'none';
+                fullContent.style.display = 'block';
+            } else {
+                shortContent.style.display = 'block';
+                fullContent.style.display = 'none';
+            }
+        }
+        
+        // Close modal with Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+        
+        // Smooth scrolling for sidebars
+        document.querySelectorAll('.dashboard-sidebar, .dashboard-right-sidebar').forEach(sidebar => {
+            sidebar.style.scrollBehavior = 'smooth';
+        });
+
+
+
+        // 🤖 ULTRA SIMPLE BOT - BYPASSES ALL CSP ISSUES
+        console.log('🚀 STARTING SIMPLE BOT SETUP');
+        
+        // Wait for page to be fully ready
+        setTimeout(function() {
+            console.log('🔍 Looking for bot elements...');
+            
+            var botElement = document.getElementById('modernAIBot');
+            var chatElement = document.getElementById('robotChatOverlay');
+            
+            console.log('Bot found:', !!botElement);
+            console.log('Chat found:', !!chatElement);
+            
+            if (botElement && chatElement) {
+                console.log('✅ Elements found! Setting up simple click...');
+                
+                // ROBOT SOUND EFFECTS
+                function playRobotSound(type) {
+                    try {
+                        var audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                        var oscillator = audioContext.createOscillator();
+                        var gainNode = audioContext.createGain();
+                        
+                        oscillator.connect(gainNode);
+                        gainNode.connect(audioContext.destination);
+                        
+                        if (type === 'click') {
+                            // Robot beep sound
+                            oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                            oscillator.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.1);
+                            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                            oscillator.start(audioContext.currentTime);
+                            oscillator.stop(audioContext.currentTime + 0.2);
+                        } else if (type === 'hover') {
+                            // Robot chirp sound
+                            oscillator.frequency.setValueAtTime(600, audioContext.currentTime);
+                            oscillator.frequency.exponentialRampToValueAtTime(800, audioContext.currentTime + 0.05);
+                            gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                            oscillator.start(audioContext.currentTime);
+                            oscillator.stop(audioContext.currentTime + 0.1);
+                        }
+                    } catch (e) {
+                        console.log('🔇 Audio not supported');
+                    }
+                }
+                
+                // ENHANCED CLICK HANDLER WITH SOUNDS
+                botElement.onclick = function(e) {
+                    console.log('🎯 BOT CLICKED!');
+                    e.preventDefault();
+                    e.stopPropagation();
+                    playRobotSound('click');
+                    chatElement.style.display = 'block';
+                    chatElement.style.opacity = '1';
+                    chatElement.style.visibility = 'visible';
+                    chatElement.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                    console.log('✅ Chat opened!');
+                };
+                
+
+                
+                // ADD HOVER SOUND EFFECTS WITH DEBOUNCE
+                var lastHoverTime = 0;
+                botElement.onmouseenter = function() {
+                    var now = Date.now();
+                    if (now - lastHoverTime > 1000) { // Only play sound once per second
+                        playRobotSound('hover');
+                        lastHoverTime = now;
+                    }
+                };
+                
+                // CLOSE CHAT FUNCTION
+                function closeChat() {
+                    console.log('🚪 CLOSING CHAT!');
+                    chatElement.style.display = 'none';
+                    chatElement.style.opacity = '0';
+                    chatElement.style.visibility = 'hidden';
+                    chatElement.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                    console.log('✅ Chat closed!');
+                }
+                
+                // CLOSE BUTTON HANDLER
+                var closeBtn = document.getElementById('chatCloseBtn');
+                if (closeBtn) {
+                    closeBtn.onclick = closeChat;
+                }
+                
+                // ESC KEY HANDLER
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && chatElement.classList.contains('active')) {
+                        closeChat();
+                    }
+                });
+                
+                // CLICK OUTSIDE HANDLER
+                chatElement.onclick = function(e) {
+                    if (e.target === chatElement) {
+                        closeChat();
+                    }
+                };
+                
+                // SIMPLE SEND MESSAGE FUNCTIONALITY
+                var sendBtn = document.getElementById('chatSendBtn');
+                var inputField = document.getElementById('chatInput');
+                var messagesArea = document.getElementById('chatMessages');
+                
+                if (sendBtn && inputField && messagesArea) {
+                    sendBtn.onclick = function() {
+                        var message = inputField.value.trim();
+                        if (message) {
+                            console.log('📤 Sending message:', message);
+                            
+                            // Add user message
+                            var userDiv = document.createElement('div');
+                            userDiv.className = 'chat-message user-message';
+                            userDiv.innerHTML = '<div class="message-avatar user-avatar">👤</div><div class="message-content"><p>' + message + '</p></div>';
+                            messagesArea.appendChild(userDiv);
+                            
+                            inputField.value = '';
+                            
+                            // Show typing indicator
+                            var typingIndicator = document.getElementById('typingIndicator');
+                            if (typingIndicator) {
+                                typingIndicator.classList.add('active');
+                                typingIndicator.style.display = 'flex';
+                            }
+                            
+                            // Scroll to bottom
+                            messagesArea.scrollTop = messagesArea.scrollHeight;
+                            
+                            // Send to AI
+                            fetch('/api/chat', {
+                                method: 'POST',
+                                headers: {'Content-Type': 'application/json'},
+                                body: JSON.stringify({message: message})
+                            })
+                            .then(function(response) { return response.json(); })
+                            .then(function(data) {
+                                console.log('✅ Got AI response:', data);
+                                
+                                // Hide typing indicator
+                                if (typingIndicator) {
+                                    typingIndicator.classList.remove('active');
+                                    typingIndicator.style.display = 'none';
+                                }
+                                
+                                // Add bot response with proper HTML escaping and formatting
+                                var botDiv = document.createElement('div');
+                                botDiv.className = 'chat-message bot-message';
+                                
+                                var avatar = document.createElement('div');
+                                avatar.className = 'message-avatar';
+                                avatar.innerHTML = '<div class="avatar-eyes"><div class="avatar-eye"><div class="avatar-pupil"></div></div><div class="avatar-eye"><div class="avatar-pupil"></div></div></div>';
+                                
+                                var content = document.createElement('div');
+                                content.className = 'message-content';
+                                
+                                var messageText = document.createElement('p');
+                                // Handle the response properly - convert markdown-like formatting to HTML
+                                var responseText = data.response || 'Sorry, I had trouble processing that.';
+                                
+                                // Basic markdown-like formatting
+                                responseText = responseText
+                                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')  // Bold
+                                    .replace(/\*(.*?)\*/g, '<em>$1</em>')              // Italic
+                                    .replace(/\n/g, '<br>')                            // Line breaks
+                                    .replace(/• /g, '• ')                              // Bullet points
+                                    .replace(/📊|🔍|✅|❌|💡|🎯|📈|📉|⚠️|🔧|🎉/g, '<span style="font-size: 1.1em;">$&</span>'); // Emojis
+                                
+                                messageText.innerHTML = responseText;
+                                content.appendChild(messageText);
+                                
+                                botDiv.appendChild(avatar);
+                                botDiv.appendChild(content);
+                                messagesArea.appendChild(botDiv);
+                                
+                                // Smooth scroll to bottom
+                                setTimeout(function() {
+                                    messagesArea.scrollTop = messagesArea.scrollHeight;
+                                }, 100);
+                            })
+                            .catch(function(error) {
+                                console.error('❌ Error:', error);
+                                
+                                // Hide typing indicator
+                                if (typingIndicator) {
+                                    typingIndicator.classList.remove('active');
+                                    typingIndicator.style.display = 'none';
+                                }
+                                
+                                // Add error message
+                                var errorDiv = document.createElement('div');
+                                errorDiv.className = 'chat-message bot-message';
+                                errorDiv.innerHTML = '<div class="message-avatar"><div class="avatar-eyes"><div class="avatar-eye"><div class="avatar-pupil"></div></div><div class="avatar-eye"><div class="avatar-pupil"></div></div></div></div><div class="message-content"><p>Sorry, I\'m having trouble connecting right now. Please try again!</p></div>';
+                                messagesArea.appendChild(errorDiv);
+                                
+                                messagesArea.scrollTop = messagesArea.scrollHeight;
+                            });
+                        }
+                    };
+                    
+                    // Enter key support
+                    inputField.onkeypress = function(e) {
+                        if (e.key === 'Enter') {
+                            sendBtn.onclick();
+                        }
+                    };
+                    
+                    // Quick question buttons
+                    function setupQuickButtons() {
+                        var quickBtns = document.querySelectorAll('.quick-btn');
+                        for (var i = 0; i < quickBtns.length; i++) {
+                            quickBtns[i].onclick = function() {
+                                var question = this.getAttribute('data-question');
+                                inputField.value = question;
+                                sendBtn.onclick();
+                            };
+                        }
+                    }
+                    
+                    setupQuickButtons();
+                    
+                    // Chat upload button functionality
+                    var chatUploadBtn = document.getElementById('chatUploadBtn');
+                    var chatFileInput = document.getElementById('chatFileInput');
+                    
+                    if (chatUploadBtn && chatFileInput) {
+                        chatUploadBtn.onclick = function(e) {
+                            e.preventDefault();
+                            chatFileInput.click();
+                        };
+                        
+                        chatFileInput.onchange = function() {
+                            if (this.files && this.files.length > 0) {
+                                var file = this.files[0];
+                                var formData = new FormData();
+                                formData.append('file', file);
+                                
+                                // Show uploading message
+                                var uploadingDiv = document.createElement('div');
+                                uploadingDiv.className = 'chat-message bot-message';
+                                uploadingDiv.innerHTML = '<div class="message-avatar"><div class="avatar-eyes"><div class="avatar-eye"><div class="avatar-pupil"></div></div><div class="avatar-eye"><div class="avatar-pupil"></div></div></div></div><div class="message-content"><p>📤 Uploading and analyzing ' + file.name + '...</p></div>';
+                                messagesArea.appendChild(uploadingDiv);
+                                messagesArea.scrollTop = messagesArea.scrollHeight;
+                                
+                                // Upload file
+                                fetch('/analyze', {
+                                    method: 'POST',
+                                    body: formData,
+                                    headers: {
+                                        'X-Requested-With': 'XMLHttpRequest'
+                                    }
+                                })
+                                .then(function(response) {
+                                    return response.json();
+                                })
+                                .then(function(data) {
+                                    if (data.success || data.redirect) {
+                                        // File uploaded successfully
+                                        var successDiv = document.createElement('div');
+                                        successDiv.className = 'chat-message bot-message';
+                                        successDiv.innerHTML = '<div class="message-avatar"><div class="avatar-eyes"><div class="avatar-eye"><div class="avatar-pupil"></div></div><div class="avatar-eye"><div class="avatar-pupil"></div></div></div></div><div class="message-content"><p>✅ Great! I\'ve loaded your dataset: <strong>' + file.name + '</strong></p><p>Now I can answer questions specifically about this data. What would you like to know?</p></div>';
+                                        messagesArea.appendChild(successDiv);
+                                        
+                                        // Reset file input
+                                        chatFileInput.value = '';
+                                    } else {
+                                        throw new Error(data.error || 'Upload failed');
+                                    }
+                                    messagesArea.scrollTop = messagesArea.scrollHeight;
+                                })
+                                .catch(function(error) {
+                                    console.error('❌ Upload error:', error);
+                                    var errorDiv = document.createElement('div');
+                                    errorDiv.className = 'chat-message bot-message';
+                                    errorDiv.innerHTML = '<div class="message-avatar"><div class="avatar-eyes"><div class="avatar-eye"><div class="avatar-pupil"></div></div><div class="avatar-eye"><div class="avatar-pupil"></div></div></div></div><div class="message-content"><p>❌ Sorry, there was an error uploading your file. Please try again or check the file format (CSV, XLSX, XLS).</p></div>';
+                                    messagesArea.appendChild(errorDiv);
+                                    chatFileInput.value = '';
+                                    messagesArea.scrollTop = messagesArea.scrollHeight;
+                                });
+                            }
+                        };
+                    }
+                    
+                    // ESC key to close chat
+                    document.addEventListener('keydown', function(e) {
+                        if (e.key === 'Escape' && chatOverlay.classList.contains('active')) {
+                            chatOverlay.classList.remove('active');
+                            console.log('🔒 Chat closed with ESC key');
+                        }
+                    });
+                    
+                    // Click outside to close chat
+                    chatOverlay.addEventListener('click', function(e) {
+                        if (e.target === chatOverlay) {
+                            chatOverlay.classList.remove('active');
+                            console.log('🔒 Chat closed by clicking outside');
+                        }
+                    });
+                }
+                
+                console.log('✅ Simple bot setup complete!');
+            } else {
+                console.error('❌ Elements not found!');
+                
+                // Debug - list all elements
+                var allElements = document.querySelectorAll('*[id]');
+                console.log('📋 All elements with IDs:');
+                for (var i = 0; i < allElements.length; i++) {
+                    console.log('  -', allElements[i].id, ':', allElements[i].tagName);
+                }
+            }
+        }, 1000);
+
+    </script>
+
+    <!-- Mobile Menu JavaScript -->
+    <script>
+        // Mobile menu functionality for results dashboard
+        function initMobileMenu() {
+            const navToggle = document.querySelector('.nav-toggle');
+            const navMenu = document.querySelector('.nav-menu');
+            
+            if (navToggle && navMenu) {
+                console.log('🔧 Initializing mobile menu...');
+                navToggle.addEventListener('click', () => {
+                    navMenu.classList.toggle('active');
+                    console.log('📱 Mobile menu toggled');
+                });
+                
+                // Close menu when clicking on a link
+                const navLinks = document.querySelectorAll('.nav-link');
+                navLinks.forEach(link => {
+                    link.addEventListener('click', () => {
+                        navMenu.classList.remove('active');
+                    });
+                });
+                
+                // Close menu when clicking outside
+                document.addEventListener('click', (e) => {
+                    if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
+                        navMenu.classList.remove('active');
+                    }
+                });
+            } else {
+                console.log('❌ Mobile menu elements not found');
+            }
+        }
+        
+        // Initialize mobile menu when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initMobileMenu);
+        } else {
+            initMobileMenu();
+        }
+    </script>
+
+    <!-- Footer -->
+    <footer class="dashboard-footer">
+        <div class="footer-content">
+            <div class="footer-left">
+                <span>&copy; 2024 DataScope. Created by Mangaldip Dhua.</span>
+            </div>
+            <div class="footer-center">
+                <span>Powered by AI | {{ analysis.basic_info.shape[0] }} rows analyzed</span>
+            </div>
+            <div class="footer-right">
+                <a href="{{ url_for('upload_page') }}" class="footer-link">New Analysis</a>
+            </div>
+        </div>
+        
+
+
+        
+        <!-- Modern AI Assistant Bot -->
+        <div class="modern-ai-bot" id="modernAIBot">
+            <div class="bot-floating-text">
+                <span>Click me! 👆</span>
+            </div>
+            
+            <!-- Glowing Particles -->
+            <div class="bot-particles">
+                <div class="particle particle-1"></div>
+                <div class="particle particle-2"></div>
+                <div class="particle particle-3"></div>
+                <div class="particle particle-4"></div>
+                <div class="particle particle-5"></div>
+                <div class="particle particle-6"></div>
+            </div>
+            
+            <div class="bot-container">
+                <!-- Modern Bot Body -->
+                <div class="bot-main-body">
+                    <!-- Robot Antennas -->
+                    <div class="bot-antennas">
+                        <div class="antenna left-antenna">
+                            <div class="antenna-tip"></div>
+                        </div>
+                        <div class="antenna right-antenna">
+                            <div class="antenna-tip"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Bot Face Screen -->
+                    <div class="bot-face-screen">
+                        <div class="screen-glow"></div>
+                        <div class="bot-display">
+                            <div class="display-line line-1"></div>
+                            <div class="display-line line-2"></div>
+                            <div class="display-line line-3"></div>
+                            <!-- Funny Eyes instead of emoji -->
+                            <div class="bot-funny-eyes">
+                                <div class="eye left-eye">
+                                    <div class="pupil"></div>
+                                </div>
+                                <div class="eye right-eye">
+                                    <div class="pupil"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Status Lights - Monochromatic -->
+                    <div class="bot-status-lights">
+                        <div class="status-light white"></div>
+                        <div class="status-light grey"></div>
+                        <div class="status-light golden"></div>
+                    </div>
+                </div>
+                
+                <!-- Bot Base/Legs -->
+                <div class="bot-base">
+                    <div class="base-glow"></div>
+                    <div class="bot-propulsion">
+                        <div class="thruster left-thruster">
+                            <div class="thruster-core"></div>
+                            <div class="thruster-ring ring-1"></div>
+                            <div class="thruster-ring ring-2"></div>
+                            <div class="thruster-flame"></div>
+                        </div>
+                        <div class="thruster right-thruster">
+                            <div class="thruster-core"></div>
+                            <div class="thruster-ring ring-1"></div>
+                            <div class="thruster-ring ring-2"></div>
+                            <div class="thruster-flame"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Floating Elements -->
+                <div class="bot-particles">
+                    <div class="particle p1"></div>
+                    <div class="particle p2"></div>
+                    <div class="particle p3"></div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- AI Robot Chat Interface -->
+    <div class="robot-chat-overlay" id="robotChatOverlay">
+        <div class="dashboard-blur-background"></div>
+        <div class="robot-chat-container" id="robotChatContainer">
+            <div class="chat-glass-glow"></div>
+            <div class="chat-header">
+                <div class="chat-robot-avatar">
+                    <div class="mini-robot-head">
+                        <div class="mini-robot-funny-eyes">
+                            <div class="mini-eye left-mini-eye">
+                                <div class="mini-pupil"></div>
+                            </div>
+                            <div class="mini-eye right-mini-eye">
+                                <div class="mini-pupil"></div>
+                            </div>
+                        </div>
+                        <div class="mini-robot-mouth"></div>
+                    </div>
+                </div>
+                <div class="chat-title">
+                    <h3>AI Data Assistant</h3>
+                    <span class="chat-subtitle">Chat with your data analysis</span>
+                </div>
+                <button class="chat-close-btn" id="chatCloseBtn">✕</button>
+            </div>
+            
+            <div class="chat-messages" id="chatMessages">
+                <div class="chat-message bot-message">
+                    <div class="message-avatar">
+                        <div class="avatar-eyes">
+                            <div class="avatar-eye">
+                                <div class="avatar-pupil"></div>
+                            </div>
+                            <div class="avatar-eye">
+                                <div class="avatar-pupil"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="message-content">
+                        <p>Hello! I'm your AI Data Assistant! ✨</p>
+                        <p>I can help you understand your data analysis. What would you like to know?</p>
+                        <div class="quick-questions">
+                            <button class="quick-btn" data-question="What are the key insights from my data?">📊 Key Insights</button>
+                            <button class="quick-btn" data-question="Are there any correlations I should know about?">🔗 Correlations</button>
+                            <button class="quick-btn" data-question="What about missing data patterns?">❓ Missing Data</button>
+                            <button class="quick-btn" data-question="Any outliers detected?">⚠️ Outliers</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chat-input-area">
+                <div class="chat-input-container">
+                    <input type="text" id="chatInput" placeholder="Ask me anything about your data..." maxlength="500">
+                    <button id="chatSendBtn" class="chat-send-btn">
+                        <div class="send-robot-face">
+                            <div class="send-robot-eyes">
+                                <div class="send-eye">
+                                    <div class="send-pupil"></div>
+                                </div>
+                                <div class="send-eye">
+                                    <div class="send-pupil"></div>
+                                </div>
+                            </div>
+                            <div class="send-robot-mouth"></div>
+                        </div>
+                    </button>
+                </div>
+                <div class="chat-actions-buttons">
+                    <button id="chatUploadBtn" class="chat-action-btn upload-btn" title="Upload new dataset">
+                        <i class="fas fa-upload"></i>
+                        <span>Upload Dataset</span>
+                    </button>
+                    <input type="file" id="chatFileInput" accept=".csv,.xlsx,.xls" style="display: none;">
+                </div>
+                <div class="chat-typing-indicator" id="typingIndicator">
+                    <span>AI is thinking</span>
+                    <div class="typing-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

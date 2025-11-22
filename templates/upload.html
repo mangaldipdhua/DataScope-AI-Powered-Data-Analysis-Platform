@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Data - DataScope{% endblock %}
+
+{% block og_title %}Upload Your Data - DataScope{% endblock %}
+{% block og_description %}Upload your CSV or Excel files to get instant AI-powered analysis and visualizations.{% endblock %}
+
+{% block content %}
+<section class="section" style="padding-top: 120px;">
+    <div class="container">
+        <div class="section-header">
+            <h1 class="section-title text-gradient">
+                <i class="fas fa-cloud-upload-alt"></i>
+                Upload Your Dataset
+            </h1>
+            <p class="section-subtitle">
+                Transform your data into actionable insights with our AI-powered analysis platform
+            </p>
+        </div>
+        
+        <div style="max-width: 900px; margin: 0 auto;">
+            <!-- Upload Form Card -->
+            <div class="card mb-8" style="padding: 3rem;">
+                <form action="{{ url_for('analyze_file') }}" method="post" enctype="multipart/form-data" id="uploadForm">
+                    <!-- Upload Area -->
+                    <div class="upload-area animate-pulse" id="uploadArea">
+                        <div class="upload-content">
+                            <div class="upload-icon mb-6">
+                                <i class="fas fa-cloud-upload-alt" id="uploadIcon"></i>
+                            </div>
+                            <div class="upload-text" id="uploadText">
+                                <h3 class="mb-3">Drop your files here</h3>
+                                <p class="mb-4">or <span style="color: var(--text-secondary); text-decoration: underline; cursor: pointer;" onclick="document.getElementById('fileInput').click()">browse to upload</span></p>
+                                <div class="upload-formats">
+                                    <span class="format-badge">
+                                        <i class="fas fa-file-csv"></i>
+                                        CSV
+                                    </span>
+                                    <span class="format-badge">
+                                        <i class="fas fa-file-excel"></i>
+                                        Excel
+                                    </span>
+                                    <span class="format-badge">
+                                        <i class="fas fa-weight-hanging"></i>
+                                        Up to 50MB
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="file" name="file" id="fileInput" accept=".csv,.xlsx,.xls" required style="display: none;">
+                        
+                        <!-- Progress Bar -->
+                        <div class="upload-progress" id="uploadProgress" style="display: none;">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progressFill"></div>
+                            </div>
+                            <p class="progress-text" id="progressText">Uploading...</p>
+                        </div>
+                    </div>
+                    
+                    <!-- File Info Display -->
+                    <div class="file-info" id="fileInfo" style="display: none;">
+                        <div class="file-details">
+                            <div class="file-icon">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <div class="file-meta">
+                                <h4 id="fileName">filename.csv</h4>
+                                <p id="fileSize">2.4 MB</p>
+                                <div class="file-status">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Ready to analyze</span>
+                                </div>
+                            </div>
+                            <button type="button" class="remove-file" id="removeFile">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="upload-actions">
+                        <button type="submit" class="btn btn-primary btn-lg" id="analyzeBtn" disabled>
+                            <i class="fas fa-magic"></i>
+                            <span>Analyze Data</span>
+                        </button>
+
+                    </div>
+                </form>
+            </div>
+            
+            <!-- File Requirements -->
+            <div class="card file-requirements-card">
+                <div class="feature-icon">
+                    <i class="fas fa-info-circle"></i>
+                </div>
+                <h4>File Requirements</h4>
+                
+                <div class="requirements-grid">
+                    <div class="requirements-section">
+                        <h6 class="requirements-title">Supported Formats</h6>
+                        <div class="format-item">
+                            <div class="format-icon">
+                                <i class="fas fa-file-csv"></i>
+                            </div>
+                            <div class="format-details">
+                                <span class="format-name">CSV Files</span>
+                                <span class="format-ext">.csv</span>
+                            </div>
+                        </div>
+                        <div class="format-item">
+                            <div class="format-icon">
+                                <i class="fas fa-file-excel"></i>
+                            </div>
+                            <div class="format-details">
+                                <span class="format-name">Excel Files</span>
+                                <span class="format-ext">.xlsx, .xls</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="requirements-section">
+                        <h6 class="requirements-title">Requirements</h6>
+                        <div class="requirement-item">
+                            <i class="fas fa-weight-hanging requirement-icon"></i>
+                            <span>Maximum file size: <strong>50MB</strong></span>
+                        </div>
+                        <div class="requirement-item">
+                            <i class="fas fa-table requirement-icon"></i>
+                            <span>First row should contain headers</span>
+                        </div>
+                        <div class="requirement-item">
+                            <i class="fas fa-font requirement-icon"></i>
+                            <span>UTF-8 encoding preferred</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+// Sample data button handler
+document.addEventListener('DOMContentLoaded', function() {
+    const sampleBtn = document.getElementById('sampleBtn');
+    if (sampleBtn) {
+        sampleBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Create sample data blob
+            const sampleData = `Name,Age,Salary,Department,Years_Experience,Performance_Score
+John Smith,28,55000,Engineering,3,85
+Sarah Johnson,32,62000,Marketing,5,92
+Mike Brown,45,78000,Engineering,15,88
+Emily Davis,29,51000,Sales,2,79
+David Wilson,38,69000,Marketing,8,91
+Lisa Anderson,34,58000,Sales,6,87
+Chris Miller,41,72000,Engineering,12,89
+Amanda Taylor,27,48000,HR,1,82
+Robert Garcia,36,65000,Marketing,7,90
+Jennifer Martinez,31,59000,Sales,4,86`;
+            
+            const blob = new Blob([sampleData], { type: 'text/csv' });
+            const file = new File([blob], 'sample_employee_data.csv', { type: 'text/csv' });
+            
+            // Get file input and simulate file selection
+            const fileInput = document.getElementById('fileInput');
+            if (fileInput) {
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                fileInput.files = dataTransfer.files;
+                
+                // Trigger change event
+                const event = new Event('change', { bubbles: true });
+                fileInput.dispatchEvent(event);
+            }
+            
+            alert('✅ Sample data loaded! Ready to analyze.');
+        });
+    }
+});
+</script>
+{% endblock %}

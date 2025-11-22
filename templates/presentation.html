@@ -1,0 +1,1167 @@
+{% extends "base.html" %}
+
+{% block title %}Presentation - DataScope | AI-Powered Data Analysis Platform{% endblock %}
+
+{% block og_title %}DataScope - Project Presentation{% endblock %}
+{% block og_description %}Comprehensive presentation of DataScope: Gemini-enhanced AI analysis platform with privacy-first design and advanced analytics.{% endblock %}
+
+{% block content %}
+<style>
+    /* Presentation Specific Styles */
+    .presentation-container {
+        position: relative;
+        scroll-behavior: smooth;
+    }
+
+    .presentation-slide {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: var(--space-20) var(--space-8);
+        border-bottom: 2px solid var(--border-subtle);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .slide-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        opacity: 0.03;
+    }
+
+    .slide-content {
+        max-width: 1200px;
+        width: 100%;
+        z-index: 1;
+    }
+
+    .slide-number {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+        background: var(--bg-glass);
+        padding: 0.5rem 1rem;
+        border-radius: var(--radius-full);
+        border: 1px solid var(--border-subtle);
+        z-index: 100;
+    }
+
+    /* Slide 1: Title */
+    .slide-title {
+        text-align: center;
+    }
+
+    .slide-title h1 {
+        font-size: var(--text-6xl);
+        background: linear-gradient(135deg, var(--secondary-light), var(--primary-light));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: var(--space-6);
+        animation: fadeInDown 0.8s ease-out;
+    }
+
+    .slide-title .subtitle {
+        font-size: var(--text-2xl);
+        color: var(--text-secondary);
+        margin-bottom: var(--space-12);
+        animation: fadeInUp 0.8s ease-out 0.2s both;
+    }
+
+    .slide-title .abstract {
+        font-size: var(--text-base);
+        line-height: 1.8;
+        color: var(--text-secondary);
+        margin-top: var(--space-12);
+        max-width: 900px;
+        margin-left: auto;
+        margin-right: auto;
+        animation: fadeInUp 0.8s ease-out 0.4s both;
+    }
+
+    .keywords {
+        margin-top: var(--space-12);
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-3);
+        justify-content: center;
+        animation: fadeInUp 0.8s ease-out 0.6s both;
+    }
+
+    .keyword-tag {
+        display: inline-block;
+        background: var(--accent-hover);
+        border: 1px solid var(--border-default);
+        padding: var(--space-2) var(--space-4);
+        border-radius: var(--radius-full);
+        font-size: var(--text-sm);
+        color: var(--text-secondary);
+    }
+
+    /* Slide Content Styling */
+    .slide-section {
+        margin-bottom: var(--space-12);
+    }
+
+    .slide-section h2 {
+        font-size: var(--text-4xl);
+        margin-bottom: var(--space-8);
+        color: var(--text-primary);
+    }
+
+    .slide-section h3 {
+        font-size: var(--text-2xl);
+        margin-bottom: var(--space-6);
+        color: var(--text-primary);
+    }
+
+    .slide-point {
+        margin-bottom: var(--space-6);
+        padding-left: var(--space-6);
+        border-left: 3px solid var(--border-default);
+        color: var(--text-secondary);
+        line-height: 1.8;
+    }
+
+    .slide-point strong {
+        color: var(--text-primary);
+    }
+
+    .slide-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: var(--space-8);
+        margin-top: var(--space-8);
+    }
+
+    .grid-card {
+        background: var(--bg-glass);
+        border: 1px solid var(--border-default);
+        border-radius: var(--radius-lg);
+        padding: var(--space-6);
+        transition: all var(--transition-normal);
+        backdrop-filter: blur(10px);
+    }
+
+    .grid-card:hover {
+        background: var(--accent-hover);
+        border-color: var(--border-strong);
+        transform: translateY(-4px);
+    }
+
+    .grid-card h4 {
+        font-size: var(--text-lg);
+        margin-bottom: var(--space-3);
+        color: var(--text-primary);
+    }
+
+    .grid-card p {
+        font-size: var(--text-sm);
+        color: var(--text-secondary);
+        line-height: 1.6;
+    }
+
+    .solution-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: var(--space-8);
+        margin-top: var(--space-10);
+    }
+
+    .solution-card {
+        position: relative;
+        background: var(--bg-glass);
+        border: 1px solid var(--border-default);
+        border-radius: var(--radius-xl);
+        padding: var(--space-8);
+        overflow: hidden;
+        transition: all var(--transition-normal);
+    }
+
+    .solution-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(213, 204, 199, 0.1), rgba(118, 92, 220, 0.08));
+        opacity: 0;
+        transition: opacity var(--transition-normal);
+        z-index: 0;
+    }
+
+    .solution-card:hover {
+        transform: translateY(-6px);
+        border-color: var(--border-strong);
+    }
+
+    .solution-card:hover::before {
+        opacity: 1;
+    }
+
+    .solution-card .solution-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: var(--radius-full);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(213, 204, 199, 0.12);
+        color: var(--secondary-light);
+        margin-bottom: var(--space-4);
+        font-size: var(--text-xl);
+        z-index: 1;
+    }
+
+    .solution-card h4 {
+        position: relative;
+        z-index: 1;
+        font-size: var(--text-xl);
+        margin-bottom: var(--space-4);
+        color: var(--text-primary);
+    }
+
+    .solution-card p {
+        position: relative;
+        z-index: 1;
+        color: var(--text-secondary);
+        line-height: 1.7;
+    }
+
+    .tier-layout {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: var(--space-8);
+        margin: var(--space-10) 0;
+    }
+
+    .tier-card {
+        position: relative;
+        background: var(--bg-glass);
+        border: 1px solid var(--border-default);
+        border-radius: var(--radius-xl);
+        padding: var(--space-8);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+        backdrop-filter: blur(12px);
+        transition: all var(--transition-normal);
+    }
+
+    .tier-card::after {
+        content: "";
+        position: absolute;
+        inset: 1px;
+        border-radius: inherit;
+        border: 1px solid rgba(213, 204, 199, 0.08);
+        pointer-events: none;
+    }
+
+    .tier-card:hover {
+        transform: translateY(-6px);
+        border-color: var(--border-strong);
+    }
+
+    .tier-card h4 {
+        font-size: var(--text-xl);
+        margin-bottom: var(--space-4);
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+    }
+
+    .tier-card ul {
+        margin: var(--space-4) 0 0;
+        padding-left: var(--space-6);
+        color: var(--text-secondary);
+        line-height: 1.7;
+    }
+
+    .tier-card ul li::marker {
+        color: var(--secondary-light);
+    }
+
+    .data-flow-diagram {
+        margin-top: var(--space-12);
+        padding: var(--space-10);
+        border-radius: var(--radius-xl);
+        background: var(--bg-glass);
+        border: 1px solid var(--border-default);
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-6);
+        align-items: center;
+        justify-content: center;
+    }
+
+    .flow-step {
+        min-width: 220px;
+        max-width: 240px;
+        background: rgba(40, 38, 43, 0.85);
+        padding: var(--space-6);
+        border-radius: var(--radius-lg);
+        border: 1px solid rgba(213, 204, 199, 0.15);
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-3);
+        text-align: left;
+    }
+
+    .flow-step h4 {
+        font-size: var(--text-lg);
+        margin: 0;
+        color: var(--secondary-light);
+    }
+
+    .flow-step p {
+        margin: 0;
+        color: var(--text-secondary);
+        line-height: 1.6;
+        font-size: var(--text-sm);
+    }
+
+    .flow-arrow {
+        font-size: var(--text-2xl);
+        color: var(--secondary-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: var(--space-4);
+    }
+
+    .mongo-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: var(--space-6);
+        margin-top: var(--space-10);
+    }
+
+    .mongo-card {
+        background: var(--accent-hover);
+        border-left: 4px solid var(--secondary-light);
+        border-radius: var(--radius-lg);
+        padding: var(--space-6);
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-3);
+    }
+
+    .mongo-card strong {
+        color: var(--secondary-light);
+        font-size: var(--text-lg);
+    }
+
+    .mongo-card span {
+        color: var(--text-secondary);
+        line-height: 1.6;
+    }
+
+    .tech-stack-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: var(--space-8);
+        margin: var(--space-10) 0;
+    }
+
+    .tech-stack-card {
+        background: var(--bg-glass);
+        border: 1px solid var(--border-default);
+        border-radius: var(--radius-xl);
+        padding: var(--space-8);
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-3);
+        transition: all var(--transition-normal);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .tech-stack-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(213, 204, 199, 0.12), rgba(118, 92, 220, 0.08));
+        opacity: 0;
+        transition: opacity var(--transition-normal);
+    }
+
+    .tech-stack-card:hover::before {
+        opacity: 1;
+    }
+
+    .tech-stack-card:hover {
+        transform: translateY(-6px);
+        border-color: var(--border-strong);
+    }
+
+    .tech-stack-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: var(--radius-full);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(213, 204, 199, 0.12);
+        color: var(--secondary-light);
+        font-size: var(--text-xl);
+        position: relative;
+        z-index: 1;
+    }
+
+    .tech-stack-card strong {
+        position: relative;
+        z-index: 1;
+        color: var(--text-primary);
+        font-size: var(--text-lg);
+    }
+
+    .tech-stack-card span {
+        position: relative;
+        z-index: 1;
+        color: var(--text-secondary);
+        line-height: 1.6;
+        font-size: var(--text-sm);
+    }
+
+    /* Diagram Styles */
+    .architecture-diagram {
+        background: var(--bg-glass);
+        border: 1px solid var(--border-default);
+        border-radius: var(--radius-lg);
+        padding: var(--space-12);
+        margin: var(--space-12) 0;
+        font-family: 'Monaco', 'Courier New', monospace;
+        font-size: var(--text-sm);
+        line-height: 1.8;
+        color: var(--text-secondary);
+        overflow-x: auto;
+        white-space: pre;
+    }
+
+    .architecture-box {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-8);
+        margin: var(--space-12) 0;
+    }
+
+    .box-item {
+        background: var(--accent-hover);
+        border-left: 4px solid var(--accent-glow);
+        padding: var(--space-6);
+        border-radius: var(--radius-lg);
+    }
+
+    .box-item strong {
+        display: block;
+        margin-bottom: var(--space-2);
+        color: var(--text-primary);
+    }
+
+    /* Performance Stats */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: var(--space-6);
+        margin: var(--space-12) 0;
+    }
+
+    .stat-box {
+        background: var(--bg-glass);
+        border: 1px solid var(--border-default);
+        border-radius: var(--radius-lg);
+        padding: var(--space-8);
+        text-align: center;
+    }
+
+    .stat-value {
+        font-size: var(--text-3xl);
+        font-weight: 800;
+        color: var(--text-primary);
+        margin-bottom: var(--space-2);
+    }
+
+    .stat-label {
+        font-size: var(--text-sm);
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    /* Feature List */
+    .feature-list {
+        list-style: none;
+        margin: var(--space-8) 0;
+    }
+
+    .feature-list li {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: var(--space-6);
+        padding: var(--space-4);
+        background: var(--bg-glass);
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border-subtle);
+    }
+
+    .feature-list li:before {
+        content: '✓';
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        min-width: 28px;
+        background: var(--accent-glow);
+        border-radius: 50%;
+        color: var(--text-inverse);
+        margin-right: var(--space-4);
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    .feature-list span {
+        flex: 1;
+        color: var(--text-secondary);
+        line-height: 1.6;
+    }
+
+    /* Animations */
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .presentation-slide {
+            min-height: auto;
+            padding: var(--space-12) var(--space-4);
+        }
+
+        .slide-title h1 {
+            font-size: var(--text-4xl);
+        }
+
+        .slide-title .subtitle {
+            font-size: var(--text-xl);
+        }
+
+        .slide-section h2 {
+            font-size: var(--text-2xl);
+        }
+
+        .slide-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .slide-number {
+            bottom: 1rem;
+            right: 1rem;
+        }
+    }
+</style>
+
+<div class="presentation-container">
+    <!-- Slide 1: Title & Abstract -->
+    <section class="presentation-slide slide-title">
+        <div class="slide-background"></div>
+        <div class="slide-content">
+            <h1>
+                <i class="fas fa-brain"></i><br>
+                DataScope
+            </h1>
+            <p class="subtitle">AI-Powered Data Analysis Platform</p>
+            <p class="subtitle" style="font-size: var(--text-lg);">An Intelligent AI Web Platform for Automated Data Processing, Visualization, and Insight Generation</p>
+            
+            <div class="slide-point" style="border-left: none; margin-top: var(--space-12);">
+                <p class="abstract">
+                    DataScope is an advanced web-based AI platform built using Python, Flask, MongoDB, and AI architecture Google Gemini API. It automates exploratory data analysis (EDA), statistical computation, and visualization, providing real-time conversational AI for intelligent insights. Designed with a privacy-first approach, it supports local and cloud-based analysis and empowers both technical and non-technical users to derive actionable insights efficiently.
+                </p>
+            </div>
+
+            <div class="keywords">
+                <span class="keyword-tag">Data Analysis</span>
+                <span class="keyword-tag">AI & Machine Learning</span>
+                <span class="keyword-tag">Web Development</span>
+                <span class="keyword-tag">Privacy-First</span>
+                <span class="keyword-tag">MongoDB Integration</span>
+                <span class="keyword-tag">Chat API</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 2: Background & Motivation -->
+    <section class="presentation-slide">
+        <div class="slide-background"></div>
+        <div class="slide-content">
+            <div class="slide-section">
+                <h2><i class="fas fa-history"></i> Background & Motivation</h2>
+                
+                <div class="slide-point">
+                    <strong>The Challenge:</strong> Data has become the most valuable organizational asset, but extracting insights is often complex and time-consuming.
+                </div>
+
+                <div class="slide-point">
+                    <strong>Current Problems:</strong> Traditional data analysis requires expertise in coding, statistics, and domain understanding.
+                </div>
+
+                <div class="slide-point">
+                    <strong>Market Gap:</strong> Commercial tools like Tableau and Power BI are expensive and have steep learning curves. Open-source libraries require programming expertise.
+                </div>
+
+                <div class="slide-grid">
+                    <div class="grid-card">
+                        <h4><i class="fas fa-dollar-sign"></i> High Cost</h4>
+                        <p>Commercial platforms prohibit adoption by smaller organizations</p>
+                    </div>
+                    <div class="grid-card">
+                        <h4><i class="fas fa-chart-line"></i> Complex Workflows</h4>
+                        <p>Manual, repetitive EDA tasks waste valuable analyst time</p>
+                    </div>
+                    <div class="grid-card">
+                        <h4><i class="fas fa-lock"></i> Privacy Risks</h4>
+                        <p>Cloud-based tools expose sensitive data to third-party servers</p>
+                    </div>
+                </div>
+
+                <p style="margin-top: var(--space-12); color: var(--text-secondary);">
+                    <strong style="color: var(--text-primary);">Motivation:</strong> Bridge the gap between accessibility and analytical power through an AI-driven, user-friendly, and privacy-conscious web platform.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 3: Objectives & Scope -->
+    <section class="presentation-slide">
+        <div class="slide-background"></div>
+        <div class="slide-content">
+            <div class="slide-section">
+                <h2><i class="fas fa-bullseye"></i> Project Objectives & Scope</h2>
+                
+                <h3 style="margin-top: var(--space-12); color: var(--text-secondary);">Objectives:</h3>
+                <ul class="feature-list">
+                    <li><span>Democratize advanced data analysis for all user levels</span></li>
+                    <li><span>Automate EDA with minimal manual effort</span></li>
+                    <li><span>Integrate Gemini-powered insight engine for contextual reasoning and privacy-aware analysis</span></li>
+                    <li><span>Enable conversational analytics using Chat API</span></li>
+                    <li><span>Provide AI-driven recommendations for preprocessing and ML readiness</span></li>
+                    <li><span>Support multi-format data (CSV, Excel)</span></li>
+                    <li><span>Ensure high security and zero-data persistence by default</span></li>
+                    <li><span>Achieve production-grade scalability and reliability</span></li>
+                </ul>
+
+                <h3 style="margin-top: var(--space-12); color: var(--text-secondary);">Scope:</h3>
+                <div class="slide-grid">
+                    <div class="box-item">
+                        <strong>Functional</strong>
+                        Automated cleaning, visualization, insight generation, chat interface, correlation analysis, outlier detection
+                    </div>
+                    <div class="box-item">
+                        <strong>Technical</strong>
+                        Flask, Pandas, NumPy, MongoDB, Gemini API, Docker containerization
+                    </div>
+                    <div class="box-item">
+                        <strong>Non-Functional</strong>
+                        50MB dataset handling, &lt;60s analysis time, 99.9% uptime target
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 4: Problem Statement -->
+    <section class="presentation-slide">
+        <div class="slide-background"></div>
+        <div class="slide-content">
+            <div class="slide-section">
+                <h2><i class="fas fa-warning"></i> Problem Statement</h2>
+                
+                <h3 style="margin-top: var(--space-12); color: var(--text-secondary);">Current Challenges:</h3>
+                <ul class="feature-list">
+                    <li><span><strong>Accessibility Gap:</strong> Most tools require programming knowledge and have steep learning curves</span></li>
+                    <li><span><strong>Repetitive Processes:</strong> Manual EDA tasks are time-intensive and error-prone</span></li>
+                    <li><span><strong>Insight Generation:</strong> Converting data into actionable insights requires deep domain expertise</span></li>
+                    <li><span><strong>Security & Privacy:</strong> Data must be managed carefully for compliance (GDPR, HIPAA)</span></li>
+                </ul>
+
+                <h3 style="margin-top: var(--space-12); color: var(--text-secondary);">Limitations of Existing Solutions:</h3>
+                <div class="slide-grid">
+                    <div class="grid-card">
+                        <h4>Commercial Platforms</h4>
+                        <p>High cost, vendor lock-in, limited customization, complex interfaces</p>
+                    </div>
+                    <div class="grid-card">
+                        <h4>Open-Source Libraries</h4>
+                        <p>Require programming expertise, no GUI, poor user experience</p>
+                    </div>
+                    <div class="grid-card">
+                        <h4>Cloud Services</h4>
+                        <p>Privacy concerns, connectivity dependency, unpredictable costs</p>
+                    </div>
+                </div>
+
+                <div class="box-item" style="margin-top: var(--space-12);">
+                    <strong>Core Problem:</strong>
+                    "How can advanced data analysis be made accessible, efficient, and secure, while still providing sophisticated analytical capabilities and AI-driven insights?"
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 5: Proposed Solution & Architecture -->
+    <section class="presentation-slide">
+        <div class="slide-background"></div>
+        <div class="slide-content">
+            <div class="slide-section">
+                <h2><i class="fas fa-lightbulb"></i> Proposed Solution & Architecture</h2>
+                
+                <p style="color: var(--text-secondary); line-height: 1.8;">
+                    DataScope delivers an end-to-end, AI-guided analytics journey: frictionless uploads, automated data profiling, Gemini-backed insight generation, and immersive storytelling dashboards secured by privacy-first engineering.
+                </p>
+
+                <div class="solution-grid">
+                    <div class="solution-card">
+                        <div class="solution-icon"><i class="fas fa-robot"></i></div>
+                        <h4>Intelligent Automation</h4>
+                        <p>Gemini synthesizes statistical findings, surfaces anomalies, and produces natural-language narratives aligned with business questions.</p>
+                    </div>
+                    <div class="solution-card">
+                        <div class="solution-icon"><i class="fas fa-user-check"></i></div>
+                        <h4>Human-Centric Experience</h4>
+                        <p>Responsive UI, guided narratives, and interactive visual stacks translate complex analysis into executive-ready storytelling.</p>
+                    </div>
+                    <div class="solution-card">
+                        <div class="solution-icon"><i class="fas fa-shield-alt"></i></div>
+                        <h4>Privacy & Trust</h4>
+                        <p>Ephemeral processing, optional MongoDB persistence, audit trails, and encrypted transport keep sensitive data under user control.</p>
+                    </div>
+                    <div class="solution-card">
+                        <div class="solution-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                        <h4>Deployment-Ready</h4>
+                        <p>Flask microservices, container-first packaging, and CI/CD ready pipelines scale from laptops to cloud platforms effortlessly.</p>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: var(--space-12); color: var(--text-secondary);">System Blueprint</h3>
+                <div class="tier-layout">
+                    <div class="tier-card">
+                        <h4><i class="fas fa-desktop"></i> Experience Layer</h4>
+                        <p style="color: var(--text-secondary);">Full-screen presentation UI with contextual storytelling and immersive visualization canvases.</p>
+                        <ul>
+                            <li>Drag-and-drop uploads with instant validation</li>
+                            <li>Insights dashboard + conversational co-pilot</li>
+                            <li>Responsive layout, keyboard navigation, animations</li>
+                        </ul>
+                    </div>
+                    <div class="tier-card">
+                        <h4><i class="fas fa-cogs"></i> Intelligence Layer</h4>
+                        <p style="color: var(--text-secondary);">Flask orchestrates Pandas, NumPy, Seaborn, and Scikit-learn to drive automated analytics pipelines.</p>
+                        <ul>
+                            <li>Profile, clean, and enrich datasets up to 50MB</li>
+                            <li>Outlier analytics, correlation mapping, ML readiness</li>
+                            <li>Gemini insight engine for contextual reasoning</li>
+                        </ul>
+                    </div>
+                    <div class="tier-card">
+                        <h4><i class="fas fa-database"></i> Data Foundation</h4>
+                        <p style="color: var(--text-secondary);">Optional MongoDB provides structured persistence when teams need reproducibility and audit-ready storage.</p>
+                        <ul>
+                            <li>Stores analyses, plots, and chat transcripts on-demand</li>
+                            <li>TTL policies and encryption-at-rest options</li>
+                            <li>Decoupled design ensures stateless defaults</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: var(--space-12); color: var(--text-secondary);">4.1.3 Data Flow Architecture</h3>
+                <div class="data-flow-diagram">
+                    <div class="flow-step">
+                        <h4><i class="fas fa-file-upload"></i> Data Ingestion</h4>
+                        <p>Users upload CSV/Excel datasets → schema inference, file sanitization, and checksum logging.</p>
+                    </div>
+                    <div class="flow-arrow"><i class="fas fa-long-arrow-alt-right"></i></div>
+                    <div class="flow-step">
+                        <h4><i class="fas fa-broom"></i> Validation & Cleaning</h4>
+                        <p>Null profiling, type coercion, encoding fixes, and intelligent filling strategies.</p>
+                    </div>
+                    <div class="flow-arrow"><i class="fas fa-long-arrow-alt-right"></i></div>
+                    <div class="flow-step">
+                        <h4><i class="fas fa-project-diagram"></i> Analytics Engine</h4>
+                        <p>Pandas pipelines calculate statistics, correlations, outlier scores, and visualization payloads.</p>
+                    </div>
+                    <div class="flow-arrow"><i class="fas fa-long-arrow-alt-right"></i></div>
+                    <div class="flow-step">
+                        <h4><i class="fas fa-comment-dots"></i> Gemini Insight Layer</h4>
+                        <p>Context-rich prompt packs deliver narratives, recommendations, and follow-up questions.</p>
+                    </div>
+                    <div class="flow-arrow"><i class="fas fa-long-arrow-alt-right"></i></div>
+                    <div class="flow-step">
+                        <h4><i class="fas fa-database"></i> Persistence (Optional)</h4>
+                        <p>MongoDB archives results, plots, and chat traces with TTL retention and access controls.</p>
+                    </div>
+                    <div class="flow-arrow"><i class="fas fa-long-arrow-alt-right"></i></div>
+                    <div class="flow-step">
+                        <h4><i class="fas fa-chart-pie"></i> Delivery Channels</h4>
+                        <p>Interactive dashboards, downloadable reports, and REST endpoints feed decision workflows.</p>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: var(--space-12); color: var(--text-secondary);">MongoDB Implementation Focus</h3>
+                <div class="mongo-grid">
+                    <div class="mongo-card">
+                        <strong><i class="fas fa-sitemap"></i> Collections</strong>
+                        <span>`analyses`, `plots`, and `sessions` collections capture structured metadata with dataset fingerprints.</span>
+                    </div>
+                    <div class="mongo-card">
+                        <strong><i class="fas fa-key"></i> Security Controls</strong>
+                        <span>Credential vaulting, per-document ownership, TTL indices, and optional field encryption safeguard confidential datasets.</span>
+                    </div>
+                    <div class="mongo-card">
+                        <strong><i class="fas fa-sync"></i> Real-World Usage</strong>
+                        <span>Retain executive-ready artefacts, replay chat narratives, and enable longitudinal studies without sacrificing privacy.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 6: Technical Implementation -->
+    <section class="presentation-slide">
+        <div class="slide-background"></div>
+        <div class="slide-content">
+            <div class="slide-section">
+                <h2><i class="fas fa-cogs"></i> Technical Implementation</h2>
+                
+                <h3 style="margin-top: var(--space-12); color: var(--text-secondary);">Core Analysis Modules:</h3>
+                <div class="architecture-box">
+                    <div class="box-item">
+                        <strong><i class="fas fa-sigma"></i> Statistical Analysis</strong>
+                        Descriptive statistics, variance analysis, skewness, kurtosis, normality testing (Shapiro-Wilk)
+                    </div>
+                    <div class="box-item">
+                        <strong><i class="fas fa-ban"></i> Outlier Detection</strong>
+                        Multiple methods: IQR (Tukey's fences), Z-score method, Isolation Forest algorithm
+                    </div>
+                    <div class="box-item">
+                        <strong><i class="fas fa-link"></i> Correlation Analysis</strong>
+                        Pearson, Spearman, and Cramér's V correlation coefficients for various data types
+                    </div>
+                    <div class="box-item">
+                        <strong><i class="fas fa-wave-square"></i> Distribution Analysis</strong>
+                        Identify continuous/discrete variables, variance analysis, distribution patterns
+                    </div>
+                    <div class="box-item">
+                        <strong><i class="fas fa-filter"></i> Missing Data Analysis</strong>
+                        Severity categorization, pattern detection (MCAR, MAR), impact assessment
+                    </div>
+                </div>
+
+                <h3 style="margin-top: var(--space-12); color: var(--text-secondary);">Visualization Suite (11 Types):</h3>
+                <p style="color: var(--text-secondary); margin-bottom: var(--space-6);">
+                    Dashboard, Correlation Heatmap, Histograms, Box Plots, Pair Plots, Data Quality Visuals, Distribution Plots, Outlier Visualizations, Feature Importance Charts, Statistical Summaries, Interactive Reports
+                </p>
+
+                <h3 style="margin-top: var(--space-12); color: var(--text-secondary);">Gemini Insight Engine:</h3>
+                <div class="slide-grid">
+                    <div class="grid-card">
+                        <h4><i class="fas fa-language"></i> Narrative Intelligence</h4>
+                        <p>Translates statistical outputs into decision-ready narratives, highlights anomalies, and recommends next-best actions.</p>
+                    </div>
+                    <div class="grid-card">
+                        <h4><i class="fas fa-headset"></i> Conversational Co-Pilot</h4>
+                        <p>Chat API delivers follow-up analysis, clarifies metrics, and supports ad-hoc exploration with dataset context awareness.</p>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: var(--space-12); color: var(--text-secondary);">Tech Stack:</h3>
+                <div class="tech-stack-grid">
+                    <div class="tech-stack-card">
+                        <div class="tech-stack-icon"><i class="fas fa-server"></i></div>
+                        <strong>Backend & Framework</strong>
+                        <span>Python 3.10, Flask, Jinja2 templating, REST-first routing, background tasks.</span>
+                    </div>
+                    <div class="tech-stack-card">
+                        <div class="tech-stack-icon"><i class="fas fa-layer-group"></i></div>
+                        <strong>Data Processing</strong>
+                        <span>Pandas, NumPy, SciPy pipelines for profiling, cleaning, and statistical computation.</span>
+                    </div>
+                    <div class="tech-stack-card">
+                        <div class="tech-stack-icon"><i class="fas fa-brain"></i></div>
+                        <strong>Analytics & ML</strong>
+                        <span>Scikit-learn, IsolationForest, mutual information scoring, ML readiness assessments.</span>
+                    </div>
+                    <div class="tech-stack-card">
+                        <div class="tech-stack-icon"><i class="fas fa-chart-area"></i></div>
+                        <strong>Visualization Suite</strong>
+                        <span>Matplotlib, Seaborn, custom SVG/HTML storytelling canvases and dashboards.</span>
+                    </div>
+                    <div class="tech-stack-card">
+                        <div class="tech-stack-icon"><i class="fas fa-cloud"></i></div>
+                        <strong>AI & Insight Layer</strong>
+                        <span>Google Gemini API (flash) with curated prompt packs, conversational chat co-pilot.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 7: Experimental Setup & Results -->
+    <section class="presentation-slide">
+        <div class="slide-background"></div>
+        <div class="slide-content">
+            <div class="slide-section">
+                <h2><i class="fas fa-flask"></i> Experimental Setup & Results</h2>
+                
+                <h3 style="margin-top: var(--space-12); color: var(--text-secondary);">Development Environment:</h3>
+                <p style="color: var(--text-secondary); line-height: 1.8; margin-bottom: var(--space-8);">
+                    <strong style="color: var(--text-primary);">Environment:</strong> Python 3.10, Flask, Pandas, NumPy, Seaborn, Matplotlib, Scikit-learn<br>
+                    <strong style="color: var(--text-primary);">Frontend:</strong> HTML5, CSS3, JavaScript<br>
+                    <strong style="color: var(--text-primary);">AI Models:</strong> Google Gemini API (flash) for contextual analytics
+                </p>
+
+                <h3 style="margin-top: var(--space-12); color: var(--text-secondary);">Performance Benchmarks:</h3>
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-value">~8s</div>
+                        <div class="stat-label">Small Dataset (1MB)</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value">~17s</div>
+                        <div class="stat-label">Medium Dataset (5MB)</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value">~44s</div>
+                        <div class="stat-label">Large Dataset (25MB)</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value">98-100%</div>
+                        <div class="stat-label">Accuracy Rate</div>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: var(--space-12); color: var(--text-secondary);">Security & Quality Tests:</h3>
+                <ul class="feature-list">
+                    <li><span>Malicious file rejection and validation</span></li>
+                    <li><span>Automatic cleanup and resource management</span></li>
+                    <li><span>Zero permanent storage by default</span></li>
+                    <li><span>Encryption for data in transit</span></li>
+                    <li><span>Comprehensive error handling and logging</span></li>
+                </ul>
+
+                <h3 style="margin-top: var(--space-12); color: var(--text-secondary);">User Feedback:</h3>
+                <div class="box-item">
+                    <strong>Overall Response: Positive</strong>
+                    Smooth and intuitive UI, accurate visualizations, AI recommendations relevant ~92% of the time, fast analysis completion
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 8: Achievements & Research Contributions -->
+    <section class="presentation-slide">
+        <div class="slide-background"></div>
+        <div class="slide-content">
+            <div class="slide-section">
+                <h2><i class="fas fa-trophy"></i> Achievements & Research Contributions</h2>
+                
+                <h3 style="margin-top: var(--space-12); color: var(--text-secondary);">Key Achievements:</h3>
+                <ul class="feature-list">
+                    <li><span>Fully functional AI-powered web application with 18+ analysis functions</span></li>
+                    <li><span>Gemini insight engine with privacy-first orchestration delivering contextual intelligence</span></li>
+                    <li><span>Average analysis time &lt;30s for small datasets</span></li>
+                    <li><span>Handles CSV/Excel files up to 50MB securely</span></li>
+                    <li><span>2,500+ lines of core Python application logic</span></li>
+                    <li><span>Support for 11 distinct visualization types</span></li>
+                    <li><span>Real-time Chat API for interactive analysis</span></li>
+                </ul>
+
+                <h3 style="margin-top: var(--space-12); color: var(--text-secondary);">Research Contributions:</h3>
+                <div class="slide-grid">
+                    <div class="box-item">
+                        <strong>Zero-Code Framework</strong>
+                        Novel approach to making data analysis accessible without requiring programming skills
+                    </div>
+                    <div class="box-item">
+                        <strong>Gemini Insight Playbooks</strong>
+                        Prompt engineering framework that maps dataset signals to narratives and recommended actions
+                    </div>
+                    <div class="box-item">
+                        <strong>Privacy-First Design</strong>
+                        Comprehensive architecture emphasizing user data protection and optional persistence
+                    </div>
+                    <div class="box-item">
+                        <strong>Outlier Detection Study</strong>
+                        Comparative analysis of IQR, Z-score, and Isolation Forest methods
+                    </div>
+                    <div class="box-item">
+                        <strong>AI Insight Generation</strong>
+                        Framework for automated interpretation of statistical findings
+                    </div>
+                    <div class="box-item">
+                        <strong>ML Readiness Assessment</strong>
+                        Automated evaluation of data suitability for machine learning applications
+                    </div>
+                </div>
+
+                <h3 style="margin-top: var(--space-12); color: var(--text-secondary);">Quantifiable Outcomes:</h3>
+                <p style="color: var(--text-secondary); line-height: 1.8;">
+                    ✓ 2,500+ lines of production-grade Python code<br>
+                    ✓ 18+ specialized analysis functions<br>
+                    ✓ 11 visualization types<br>
+                    ✓ Support for datasets up to 50MB<br>
+                    ✓ 98-100% accuracy across analysis modules<br>
+                    ✓ &lt;60 seconds for complete analysis<br>
+                    ✓ Full Chat API with real-time responses
+                </p>
+
+                <h3 style="margin-top: var(--space-12); color: var(--text-secondary);">Why DataScope Fits Real-Life Workflows:</h3>
+                <div class="slide-grid">
+                    <div class="grid-card">
+                        <h4><i class="fas fa-business-time"></i> Faster Decision Cycles</h4>
+                        <p>Executives receive board-ready visuals and narratives minutes after upload, accelerating quarterly and daily reporting.</p>
+                    </div>
+                    <div class="grid-card">
+                        <h4><i class="fas fa-user-shield"></i> Compliance-Friendly Analytics</h4>
+                        <p>Privacy-first defaults, optional retention, and audit logs satisfy regulated sectors like finance, healthcare, and education.</p>
+                    </div>
+                    <div class="grid-card">
+                        <h4><i class="fas fa-hands-helping"></i> Cross-Team Collaboration</h4>
+                        <p>Shared dashboards, replayable chat threads, and exportable reports keep analysts, managers, and clients aligned.</p>
+                    </div>
+                    <div class="grid-card">
+                        <h4><i class="fas fa-chart-line"></i> Continuous Improvement</h4>
+                        <p>Historical analyses stored in MongoDB enable longitudinal trend studies, model refinement, and KPI tracking.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 9: Conclusion & Future Scope -->
+    <section class="presentation-slide">
+        <div class="slide-background"></div>
+        <div class="slide-content">
+            <div class="slide-section">
+                <h2><i class="fas fa-flag-checkered"></i> Conclusion & Future Scope</h2>
+                
+                <div class="box-item" style="margin-top: var(--space-12);">
+                    <strong>Conclusion:</strong>
+                    <p>DataScope successfully bridges the gap between AI, data science, and accessibility. It automates exploratory data analysis, ensures data privacy through privacy-first architecture, and delivers intelligent recommendations in real time. The Gemini-driven insight engine balances contextual intelligence with optional MongoDB retention, empowering teams to act on data while staying compliant. The platform democratizes analytics without compromising production-grade quality or security.</p>
+                </div>
+
+                <h3 style="margin-top: var(--space-12); color: var(--text-secondary);">Future Enhancements (Short Term):</h3>
+                <div class="architecture-box">
+                    <div class="box-item">
+                        <strong><i class="fas fa-clock"></i> Time-Series Analytics</strong>
+                        ARIMA, Prophet, and seasonal decomposition for temporal data analysis
+                    </div>
+                    <div class="box-item">
+                        <strong><i class="fas fa-compress"></i> Dimensionality Reduction</strong>
+                        PCA, t-SNE, and UMAP for high-dimensional data visualization
+                    </div>
+                    <div class="box-item">
+                        <strong><i class="fas fa-robot"></i> Automated ML</strong>
+                        Model selection and hyperparameter tuning recommendations
+                    </div>
+                </div>
+
+                <h3 style="margin-top: var(--space-12); color: var(--text-secondary);">Future Enhancements (Long Term):</h3>
+                <ul class="feature-list">
+                    <li><span>Collaboration features and team workflow automation</span></li>
+                    <li><span>Distributed computing support (Apache Spark, Dask)</span></li>
+                    <li><span>Explainable AI (SHAP, LIME) for model interpretability</span></li>
+                    <li><span>Differential privacy for enhanced data protection</span></li>
+                    <li><span>Real-time streaming data analysis</span></li>
+                    <li><span>Advanced forecasting and predictive modeling</span></li>
+                    <li><span>Natural language query interface (NLQ)</span></li>
+                </ul>
+
+                <h3 style="margin-top: var(--space-12); color: var(--text-secondary);">Research Directions:</h3>
+                <p style="color: var(--text-secondary); line-height: 1.8;">
+                    • Optimization of LLM inference for edge devices<br>
+                    • Enhanced privacy-preserving analytics techniques<br>
+                    • Integration of federated learning for distributed analysis<br>
+                    • Development of domain-specific analysis templates<br>
+                    • Advanced visualization for multi-dimensional data
+                </p>
+
+                <p style="margin-top: var(--space-12); text-align: center; color: var(--text-primary); font-size: var(--text-lg);">
+                    <strong>Thank You for Your Attention!</strong>
+                </p>
+            </div>
+        </div>
+    </section>
+</div>
+
+<div class="slide-number" id="slideNumber">Slide 1 / 9</div>
+
+<script>
+    let currentSlide = 1;
+    const totalSlides = 9;
+    const slides = document.querySelectorAll('.presentation-slide');
+
+    function updateSlideNumber() {
+        const slideNumber = document.getElementById('slideNumber');
+        slideNumber.textContent = `Slide ${currentSlide} / ${totalSlides}`;
+    }
+
+    function scrollToSlide(slideNum) {
+        if (slideNum >= 1 && slideNum <= totalSlides) {
+            currentSlide = slideNum;
+            slides[slideNum - 1].scrollIntoView({ behavior: 'smooth' });
+            updateSlideNumber();
+        }
+    }
+
+    const observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.5
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const slideIndex = Array.from(slides).indexOf(entry.target) + 1;
+                currentSlide = slideIndex;
+                updateSlideNumber();
+            }
+        });
+    }, observerOptions);
+
+    slides.forEach(slide => observer.observe(slide));
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+            scrollToSlide(currentSlide + 1);
+        } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+            scrollToSlide(currentSlide - 1);
+        }
+    });
+
+    updateSlideNumber();
+</script>
+
+{% endblock %}

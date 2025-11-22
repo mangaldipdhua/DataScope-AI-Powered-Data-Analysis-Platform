@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="DataScope - Professional AI-powered data analysis and visualization platform">
+    <meta name="keywords" content="data analysis, visualization, AI, machine learning, CSV analysis, data insights">
+    <meta name="author" content="Mangaldip Dhua">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="{% block og_title %}DataScope - AI-Powered Data Analysis{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Transform your data into actionable insights with our professional AI-powered analysis platform{% endblock %}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.url }}">
+    
+    <!-- Title -->
+    <title>{% block title %}DataScope - Advanced Data Analytics Platform{% endblock %}</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/datascope-favicon.svg') }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='images/datascope-favicon.svg') }}">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <!-- Interactive Grid Background -->
+    <div class="grid-background">
+        <canvas class="grid-canvas" id="gridCanvas"></canvas>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <!-- Brand -->
+            <a href="{{ url_for('index') }}" class="nav-brand">
+                <img src="{{ url_for('static', filename='images/datascope-logo.svg') }}" alt="DataScope" class="nav-logo">
+            </a>
+            
+            <!-- Desktop Menu -->
+            <ul class="nav-menu">
+                <li><a href="{{ url_for('index') }}" class="nav-link"><span><i class="fas fa-home"></i> Home</span></a></li>
+                <li><a href="{{ url_for('upload_page') }}" class="nav-link"><span><i class="fas fa-chart-line"></i> Analyze</span></a></li>
+                <li><a href="{{ url_for('presentation') }}" class="nav-link"><span><i class="fas fa-presentation"></i> Presentation</span></a></li>
+                <li><a href="{{ url_for('about') }}" class="nav-link"><span><i class="fas fa-info-circle"></i> About</span></a></li>
+                <li><a href="{{ url_for('contact') }}" class="nav-link"><span><i class="fas fa-envelope"></i> Contact</span></a></li>
+            </ul>
+            
+            <!-- Mobile Toggle -->
+            <button class="nav-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="container mt-16">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'danger' if category == 'error' else category }}" role="alert">
+                        <i class="fas fa-{{ 'exclamation-triangle' if category == 'error' else 'info-circle' if category == 'info' else 'check-circle' if category == 'success' else 'exclamation-triangle' }}"></i>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <!-- Left Section -->
+                <div class="footer-left">
+                    <div class="footer-brand">
+                        <img src="{{ url_for('static', filename='images/datascope-logo.svg') }}" alt="DataScope" class="footer-logo">
+                    </div>
+                    <p class="footer-description">
+                        Professional AI-powered data analysis and visualization platform. 
+                        Transform your raw data into meaningful insights with intelligent analytics.
+                    </p>
+                    <div class="footer-tech">
+                        <i class="fas fa-code"></i>
+                        <span>Built with Flask, Python & Gemini AI</span>
+                    </div>
+                </div>
+                
+                <!-- Right Section -->
+                <div class="footer-right">
+                    <div class="footer-nav">
+                        <div class="footer-nav-links">
+                            <a href="{{ url_for('index') }}">
+                                <span><i class="fas fa-home"></i> Home</span>
+                            </a>
+                            <a href="{{ url_for('upload_page') }}">
+                                <span><i class="fas fa-upload"></i> Analyze</span>
+                            </a>
+                            <a href="{{ url_for('presentation') }}">
+                                <span><i class="fas fa-presentation"></i> Presentation</span>
+                            </a>
+                            <a href="{{ url_for('about') }}">
+                                <span><i class="fas fa-info-circle"></i> About</span>
+                            </a>
+                            <a href="{{ url_for('contact') }}">
+                                <span><i class="fas fa-envelope"></i> Contact</span>
+                            </a>
+                        </div>
+                        
+                        <!-- Social Links -->
+                        <div class="footer-social">
+                            <a href="/api/health" class="social-link" title="API Health">
+                                <i class="fas fa-code"></i>
+                            </a>
+                            <a href="https://github.com" class="social-link" title="GitHub">
+                                <i class="fab fa-github"></i>
+                            </a>
+                            <a href="https://linkedin.com" class="social-link" title="LinkedIn">
+                                <i class="fab fa-linkedin"></i>
+                            </a>
+                        </div>
+                        
+                        <div class="footer-copyright">
+                            &copy; 2024 DataScope. Created by Mangaldip Dhua.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='js/simple_script.js') }}"></script>
+    
+    {% block extra_scripts %}{% endblock %}
+    
+    <!-- Performance Monitoring -->
+    <script>
+        // Basic performance monitoring
+        window.addEventListener('load', function() {
+            const loadTime = performance.now();
+            console.log(`Page loaded in ${Math.round(loadTime)}ms`);
+        });
+    </script>
+</body>
+</html>
