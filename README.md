@@ -36,4 +36,15 @@ The platform combines traditional data-processing techniques with AI-assisted an
 ---
 
 ## 🧩 Project Structure
+DataScope-AI-Powered-Data-Analysis-Platform/
+│
+├── static/ # CSS, JS, images
+├── templates/ # HTML templates
+├── uploads/ # User-uploaded datasets
+├── app.py # Main Flask application
+├── mongo_utils.py # MongoDB helper functions (optional usage)
+├── phi3_utils.py # AI model interaction utilities
+│
+├── requirements.txt # Dependencies
+└── README.md
 
